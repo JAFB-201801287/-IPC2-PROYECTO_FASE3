@@ -76,6 +76,7 @@ CREATE TABLE Prestamo (
     descripcion VARCHAR(200) NOT NULL,
     tipo_prestamo VARCHAR(30) NOT NULL,
     id_usuario INT NOT NULL,
+    aprobado VARCHAR(5) DEFAULT 'NO',
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
@@ -186,4 +187,4 @@ SELECT * FROM Cheque;
 INSERT INTO Cheque(monto, autorizado, disponible, id_chequera) VALUES('0', 'NO', 'SI', '');
 UPDATE Cheque SET monto = '0', autorizado = 'NO' WHERE id_cheque = '1';
 UPDATE Cheque SET disponible = 'NO' WHERE id_cheque = '1';
-
+INSERT INTO Prestamo(monto, descripcion, tipo_prestamo, id_usuario) VALUES('0', '', '', '0');

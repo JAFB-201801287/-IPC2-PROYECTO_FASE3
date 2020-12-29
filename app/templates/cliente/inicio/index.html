@@ -18,6 +18,13 @@
         <p></p>
         <br/>
 
+        <form method="POST">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">VER ESTADO DE CUENTA</button>
+        </form>
+        <p></p>
+
         <h2>{{ titulo }}</h2>
         <p></p>
         <br/>
@@ -55,41 +62,24 @@
 
         <p></p>
         <br/>
-        <h2>TRANSACCIONES</h2>
+        <h2>PRESTAMOS</h2>
         <p></p>
         <br/>
 
         <table class="tabla">
             <tr>
-                <th><strong>NO. CUENTA</strong></th>
-                <th><strong>MONTO DE TRANSACCION</strong></th>
-                <th><strong>MONTO ANTES</strong></th>
-                <th><strong>MONTO DESPUES</strong></th>
-                <th><strong>MONEDA UTILIZADA</strong></th>
-                <th><strong>TRANSACCION</strong></th>
-                <th><strong>FECHA</strong></th>
+                <th><strong>NO. PRESTAMO</strong></th>
+                <th><strong>MONTO A PAGAR</strong></th>
+                <th><strong>TIPO DE PRESTAMO</strong></th>
+                <th><strong>APROBADO</strong></th>
             </tr>
-            {% for transaccion in transacciones %}
-                {% if transaccion.id_cuenta.id_usuario.id_usuario ==  request.session.user %}
+            {% for p in prestamos %}
                     <tr>
-                        <td>{{ transaccion.id_cuenta }}</td>
-                        {% if transaccion.tipo_moneda == 'QUETZAL' %}
-                            <td>Q {{ transaccion.monto }}</td>
-                        {% elif transaccion.tipo_moneda == 'DOLLAR' %}
-                            <td>$ {{ transaccion.monto }}</td>
-                        {% endif %}
-                        {% if transaccion.id_cuenta.tipo_moneda == 'QUETZAL' %}
-                            <td>Q {{ transaccion.monto_anterior }}</td>
-                            <td>Q {{ transaccion.monto_despues }}</td>
-                        {% elif transaccion.id_cuenta.tipo_moneda == 'DOLLAR' %}
-                            <td>$ {{ transaccion.monto_anterior }}</td>
-                            <td>$ {{ transaccion.monto_despues }}</td>
-                        {% endif %}
-                        <td>{{ transaccion.tipo_moneda }}</td>
-                        <td>{{ transaccion.tipo_transaccion }}</td>
-                        <td>{{ transaccion.fecha }}</td>
+                        <td>{{ p.id_prestamo }}</td>
+                        <td>{{ p.monto }}</td>
+                        <td>{{ p.tipo_prestamo }}</td>
+                        <td>{{ p.aprobado }}</td>
                     </tr>
-                {% endif %}
             {% endfor %}
         </table>
         <p></p>

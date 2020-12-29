@@ -67,17 +67,47 @@ def inicio(request):
     user = Usuario.objects.get(id_usuario=id_usuario)
     titulo_pantalla = f"CUENTAS DEL USUARIO NO. { str( user.id_usuario ) }"
     cuentas = Cuenta.objects.all().filter(id_usuario= user.id_usuario)
-    transacciones = Transaccion.objects.select_related('id_cuenta').all() # devuelve una lista
+    prestamos = Prestamo.objects.select_related('id_usuario').all().filter(id_usuario=id_usuario) # devuelve una lista
 
-    if not cuentas:
-        print("NO HAY CUENTAS")
+
+    form = estado()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+
     variables = {
         "titulo" : titulo_pantalla,
         "cuentas": cuentas,
-        "transacciones": transacciones,
-        "user": user
+        "prestamos": prestamos,
+        "user": user,
+        "form": form
     }
+
+    if (request.method == "POST"):
+        form = estado(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            cuenta = datos.get("cuenta")
+
+
+            form = estado()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "cuentas": cuentas,
+                "prestamos": prestamos,
+                "user": user,
+                "form": form
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "cuentas": cuentas,
+                "prestamos": prestamos,
+                "user": user,
+                "form": form
+            }
     return render(request, 'cliente/inicio/index.html', variables)
+
 
 def deposito(request):
     id_usuario = request.session['user']
@@ -651,3 +681,107 @@ def cliente_cheque(request):
             }
     return render(request, 'cliente/formulario/index.html', variables)
     
+
+def lista_prestamo(request):
+    id_usuario = request.session['user']
+    user = Usuario.objects.get(id_usuario=id_usuario)
+    titulo_pantalla = f"PRESTAMOS DEL USUARIO NO. { str(user.id_usuario) }"
+    cuentas = Cuenta.objects.all().filter(id_usuario= user.id_usuario)
+    prestamos = Prestamo.objects.select_related('id_usuario').all().filter(id_usuario=id_usuario) # devuelve una lista
+
+
+    form = estado()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "cuentas": cuentas,
+        "prestamos": prestamos,
+        "user": user,
+        "form": form
+    }
+
+    if (request.method == "POST"):
+        form = estado(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            cuenta = datos.get("cuenta")
+
+
+            form = estado()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "cuentas": cuentas,
+                "prestamos": prestamos,
+                "user": user,
+                "form": form
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "cuentas": cuentas,
+                "prestamos": prestamos,
+                "user": user,
+                "form": form
+            }
+    return render(request, 'cliente/inicio/index.html', variables)
+
+def agregar_prestamo(request):
+    id_usuario = request.session['user']
+    form = prestamo()
+    titulo_pantalla = "PEDIR PRESTAMO"
+    texto_boton = "ACEPTAR"
+    regresar = 'admistrador_cuenta'
+    mensaje_error = ""
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje_error": mensaje_error
+    }
+    if (request.method == "POST"):
+        form = prestamo(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            monto = datos.get("monto")
+            tipo_prestamo = datos.get("tipo_prestamo")
+            descripcion = datos.get("descripcion")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+            #puerto = 3306
+
+            #Conexion a base de datos sin uso de modulos
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "INSERT INTO Prestamo(monto, descripcion, tipo_prestamo, id_usuario) VALUES('" + str(monto) + "', '" + descripcion + "', '" + tipo_prestamo +"', '" + str(id_usuario) + "');"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+            #form.save()
+
+            form = prestamo()
+            mensaje_error = "SE CREO LA CUENTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje_error": mensaje_error
+            }
+        else:
+            mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje_error": mensaje_error
+                
+            }
+    return render(request, 'cliente/formulario/index.html', variables)

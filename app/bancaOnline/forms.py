@@ -65,3 +65,12 @@ class c_monto(forms.Form):
 
     class Meta:
         fields = ("monto", "nombre")
+
+class prestamo(forms.Form):
+    monto = forms.FloatField(required = True, help_text='', label='', widget=forms.NumberInput(attrs={'placeholder': 'MONTO SOLICITADO'}))
+    TIPOS_PRESTAMO = [('', 'SELECCIONAR PLAZO EN EL QUE DECEA PAGAR'), ('12 MESES', '12 MESES'), ('24 MESES', '24 MESES'), ('36 MESES', '36 MESES'), ('48 MESES', '48 MESES')]
+    tipo_prestamo = forms.ChoiceField(required = True, help_text='', label='', choices=TIPOS_PRESTAMO)
+    descripcion = forms.CharField(required = True, max_length=200, help_text='', label='', widget=forms.TextInput(attrs={'placeholder': 'DESCRIPCION DEL POR QUE QUIERE EL PRESTAMO', 'class': 'text_box'}))
+
+    class Meta:
+        fields = ("monto","tipo_prestamo", "descripcion")
