@@ -74,3 +74,9 @@ class prestamo(forms.Form):
 
     class Meta:
         fields = ("monto","tipo_prestamo", "descripcion")
+
+class buscar_prestamo(forms.Form):
+    prestamos = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Prestamo.objects.all(), empty_label="SELECCIONE NUMERO DE PRESTAMO QUE DECEA", to_field_name="id_prestamo")
+
+    class Meta:
+        fields = ("prestamos")

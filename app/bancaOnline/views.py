@@ -686,47 +686,53 @@ def lista_prestamo(request):
     id_usuario = request.session['user']
     user = Usuario.objects.get(id_usuario=id_usuario)
     titulo_pantalla = f"PRESTAMOS DEL USUARIO NO. { str(user.id_usuario) }"
-    cuentas = Cuenta.objects.all().filter(id_usuario= user.id_usuario)
-    prestamos = Prestamo.objects.select_related('id_usuario').all().filter(id_usuario=id_usuario) # devuelve una lista
+    prestamos = Prestamo.objects.select_related('id_usuario').all().filter(id_usuario=id_usuario)
+    pagos_prestamo = Pagoprestamo.objects.all()
+    bandera = False
 
 
-    form = estado()
-    form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+    form = buscar_prestamo()
+    form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario)
 
     variables = {
         "titulo" : titulo_pantalla,
-        "cuentas": cuentas,
         "prestamos": prestamos,
         "user": user,
-        "form": form
+        "form": form,
+        "pagos_prestamo": pagos_prestamo,
+        "bandera": bandera
     }
 
     if (request.method == "POST"):
-        form = estado(data=request.POST)
+        form = buscar_prestamo(data=request.POST)
         if form.is_valid():
             datos = form.cleaned_data
-            cuenta = datos.get("cuenta")
+            prestamo = datos.get("prestamos")
 
+            pagos_prestamo = Pagoprestamo.objects.select_related().all().filter(id_prestamo=prestamo.id_prestamo)
+            bandera = True
 
-            form = estado()
-            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario)
             variables = {
                 "titulo" : titulo_pantalla,
-                "cuentas": cuentas,
                 "prestamos": prestamos,
                 "user": user,
-                "form": form
+                "form": form,
+                "pagos_prestamo": pagos_prestamo,
+                "bandera": bandera
             }
         else:
-            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            bandera = False
+            form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario)
             variables = {
                 "titulo" : titulo_pantalla,
-                "cuentas": cuentas,
                 "prestamos": prestamos,
                 "user": user,
-                "form": form
+                "form": form,
+                "pagos_prestamo": pagos_prestamo,
+                "bandera": bandera
             }
-    return render(request, 'cliente/inicio/index.html', variables)
+    return render(request, 'cliente/prestamo/index.html', variables)
 
 def agregar_prestamo(request):
     id_usuario = request.session['user']

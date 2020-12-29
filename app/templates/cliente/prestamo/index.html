@@ -1,14 +1,15 @@
 {% extends 'cliente/base.html' %}
 {% block content %}
     <div class="formulario">
+
         <h2>{{ titulo }}</h2>
         <br/>
-        
+        <a class="button" href="{% url 'cliente_pprestamo' %}">PEDIR PRESTAMO</a>
+        <p></p>
         <form method="POST">
             {{ form.as_p }}
             {% csrf_token %}
-            <button type="submit">{{ texto_boton }}</button>
-            <a class="button" href="{% url regresar %}">REGRESAR</a>
+            <button type="submit">BUSCAR DETALLE DE PRESTAMO</button>
         </form>
 
         <p></p>
@@ -32,6 +33,34 @@
                     </tr>
             {% endfor %}
         </table>
+
+
+
+        {% if bandera %}
+
+            <br/>
+            <h3>DETALLE DE PRESTAMO</h3>
+            <br/>
+
+            <table class="tabla">
+            <tr>
+                <th><strong>MONTO</strong></th>
+                <th><strong>INTERES</strong></th>
+                <th><strong>TIPO DE PAGO</strong></th>
+                <th><strong>NUMERO DE CUENTA</strong></th>
+                <th><strong>FECHA</strong></th>
+            </tr>
+            {% for pp in pagos_prestamo %}
+                    <tr>
+                        <td>{{ pp.monto }}</td>
+                        <td>{{ pp.interes }}</td>
+                        <td>{{ pp.tipo_pago }}</td>
+                        <td>{{ pp.id_cuenta.id_cuenta }}</td>
+                        <td>{{ pp.fecha }}</td>
+                    </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
     </div>
     
 {% endblock %}

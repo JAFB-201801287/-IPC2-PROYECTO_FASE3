@@ -272,6 +272,12 @@ class Prestamo(models.Model):
     id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
     aprobado = models.CharField(max_length=5, blank=True, null=True)
 
+    def __str__(self):
+        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo))
+
+    def __unicode__(self):
+        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo))
+
     class Meta:
         managed = False
         db_table = 'prestamo'
