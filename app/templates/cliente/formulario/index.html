@@ -1,0 +1,16 @@
+{% extends 'cliente/base.html' %}
+{% block content %}
+    <div class="formulario">
+        <h2>{{ titulo }}</h2>
+        <br/>
+        <form method="POST">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">{{ texto_boton }}</button>
+            <a class="button" href="{% url regresar %}">REGRESAR</a>
+        </form>
+        <p></p>
+        <p>{{ mensaje }}</p>
+    </div>
+
+{% endblock %}

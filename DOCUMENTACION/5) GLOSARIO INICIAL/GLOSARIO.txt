@@ -1,0 +1,108 @@
+A ______________________________________________________________________________________________________________________
+B ______________________________________________________________________________________________________________________
+C ______________________________________________________________________________________________________________________
+
+Cuenta
+Entidad
+Esta entidad servira para almacenar la informacion de las cuentas del banco y estara relacionado a las empresas y a los usuarios individoles a las que pertenescan.
+
+Cliente o Usuario individual
+Entidad
+Esta entidad servira para almacenar la informacion del usuario el cual podra tener o aperturar cuentas en el banco
+
+Cheque
+Entidad
+Esta entidad sirve para almacenar la informacion cheques del banco los cuales seran aprobados y cobrados por medio de la banca en linea.
+
+Crear cuenta
+Caso de uso
+Sera un metodo una vez el cliente halla podido ingresar a la aplicacion este podra aperturar una cuenta y escoger que tipo de cuenta decea crear.
+
+D ______________________________________________________________________________________________________________________
+
+Django
+Recurso del sistema
+Django es un framework de desarrollo web de codigo abierto escrito en Python, que respeta el patron de diseño conocido como modelo vista controlador.
+
+E ______________________________________________________________________________________________________________________
+
+Empresa
+Entidad
+Esta entidad servira para almacenar la informacion del usuario el cual podra tener o aperturar cuentas en el banco
+
+F ______________________________________________________________________________________________________________________
+
+Framework
+Recuso del sistema
+Es una estructura base utilizada como punto de partida para elaborar un proyecto con objetivos especificos.
+
+G ______________________________________________________________________________________________________________________
+H ______________________________________________________________________________________________________________________
+
+HTML
+Recurso del sistema
+Es un lenguaje de marcado que se utiliza para el desarrollo de paginas de internet. Se trata de la siglas que corresponden a HyperText Markup Language.
+
+I ______________________________________________________________________________________________________________________
+
+Inicio de sesion
+Caso de uso
+Sera un metodo para que el usuario pueda ver sus cuentas y proteger su informacion en esta se pedira un nombre de usuario y una contraseña y si estas coinciden denegara el acceso.
+
+J ______________________________________________________________________________________________________________________
+K ______________________________________________________________________________________________________________________
+L ______________________________________________________________________________________________________________________
+M ______________________________________________________________________________________________________________________
+N ______________________________________________________________________________________________________________________
+O ______________________________________________________________________________________________________________________
+P ______________________________________________________________________________________________________________________
+
+Planilla
+Entidad
+Esta entidad servira para almacenar la informacion de planilla con la cual las empresas podran pagar a sus proveedores.
+
+Prestamo
+Entidad
+Esta entidad servira para almacenar la informacion del prestamo que haga un usuario al banco.
+
+Python
+Recurso del sistema
+Es un lenguaje de programacion interpretado cuya filosofia hace hincapie en la legibilidad de su codigo. Se trata de un lenguaje de programacion multiparadigma, ya que soporta orientacion a objetos, programacion inperativa y en menor medida programacion funcional. Es un lenguake interpretado, dinamico y multiplataforma.
+
+Q ______________________________________________________________________________________________________________________
+R ______________________________________________________________________________________________________________________
+
+Registro
+Caso de uso
+Sera un metodo para que el cliente pueda crear una cuenta y poder ver y administrar sus cuentas.
+
+S ______________________________________________________________________________________________________________________
+T ______________________________________________________________________________________________________________________
+
+Tipo de cuenta
+Entidad
+Esta entidad sirve para definir que tipo de cuentas existen y ya estaran definidos desde la base de datos.
+
+Tipo de empresa
+Entidad 
+Esta entidad sirve para definir que tipo de empresa es la que esta vinculada a la cuenta y ya estaran definidos los tipos de empresas desde la base de datos.
+
+Tipo de estado de cuenta
+Entidad 
+Esta entidad sirve para definir que tipo de estado de cuenta y ya estaran definidos los tipos de estados de cuenta desde la base de datos.
+
+Tipo de prestamos
+Entidad 
+Esta entidad sirve para definir que tipo de prestamos existen y ya estaran definidos los tipos de prestamos desde la base de datos.
+
+U ______________________________________________________________________________________________________________________
+V ______________________________________________________________________________________________________________________
+
+Visual Studio Code
+Recurso del sistema
+Es un editor de código fuente desarrollado por Microsoft para Windows, Linux y Mac OS.
+
+W ______________________________________________________________________________________________________________________
+X ______________________________________________________________________________________________________________________
+Y ______________________________________________________________________________________________________________________
+Z ______________________________________________________________________________________________________________________

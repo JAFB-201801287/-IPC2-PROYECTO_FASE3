@@ -1,0 +1,30 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+    <div class="formulario">
+        <h2>{{ titulo }}</h2>
+        <br/>
+        <a class="button" href="{% url 'admistrador_agregar_cliente' %}">AGREGAR NUEVO CLIENTE</a>
+        <p></p>
+        <br/>
+        <table class="tabla">
+            <tr>
+                <th><strong>CUI</strong></th>
+                <th><strong>NIT</strong></th>
+                <th><strong>NOMBRE</strong></th>
+                <th><strong>APELLIDO</strong></th>
+                <th><strong>FECHA DE NACIMIENTO</strong></th>
+            </tr>
+            {% for a, b, c, d, e in lista %}
+                <tr>
+                    <td>{{ a }}</td>
+                    <td>{{ b }}</td>
+                    <td>{{ c }}</td>
+                    <td>{{ d }}</td>
+                    <td>{{ e }}</td>
+                </tr>
+            {% endfor %}
+
+
+        </table>
+    </div>
+{% endblock %}

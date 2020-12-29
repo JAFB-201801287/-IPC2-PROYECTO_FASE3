@@ -1,0 +1,134 @@
+body {
+    background-color: #bdecb6;
+}
+
+
+#navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+#navbar li {
+    float: left;
+}
+
+#navbar li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.title_principal {
+    text-align: center;
+    text-decoration: underline;
+    font-size: 25px;
+
+}
+/*LOGIN ------------------------------------------*/
+
+.formulario {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.formulario_cheque {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.text_box {
+    background-color: azure;
+    width: 40%;
+    padding: 10px 20px;
+    margin: 10px 3%;
+}
+
+input {
+    background-color: azure;
+    width: 40%;
+    padding: 10px 20px;
+    margin: 10px 3%;
+}
+
+select {
+    background-color: azure;
+    width: 40%;
+    padding: 10px 20px;
+    margin: 10px 3%;
+}
+
+.text_box::placeholder {
+    font-size: 1.2em;
+}
+
+.button {
+    background-color: transparent;
+    color: black; 
+    border: 2px solid #4CAF50;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+  
+.button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* TABLA DE CUENTAS ------------------------------------------------*/
+
+.tabla {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.tabla, th, td {
+    padding: 15px;
+    text-align: center;
+    border: 2px solid black;
+    background-color: honeydew;
+}
+
+.enlace {
+    text-decoration: none;
+}
+
+/* DETALLE CUENTA*/
+
+.informacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.date {
+    background: white;
+    border: none;
+    font-size: 14px;
+    height: 30px;
+    padding: 2px;
+    width: 150px;
+ }
+
+ .date:focus { 
+     outline: none;
+}
+
+button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }

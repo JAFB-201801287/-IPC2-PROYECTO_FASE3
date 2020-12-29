@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <title>BANCA EN LINEA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    </head>
+    <body>
+
+        <ul id="navbar">
+            <li><a href="{% url 'cliente_login' %}">CLIENTES</a></li>
+            <li><a href="{% url 'admistrador_login' %}">ADMINISTRADOR</a></li>
+        </ul>
+
+        <div class="title_principal">
+            <h2>SERVICIO DE BANCA EN LINEA</h2>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>

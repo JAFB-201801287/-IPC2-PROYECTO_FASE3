@@ -1,0 +1,100 @@
+{% extends 'cliente/base.html' %}
+{% block content %}
+    
+    {% comment 'Session' %}
+        <p>{{ request.session.user }}</p>
+    {% endcomment %}
+
+    <div class="formulario">
+
+        <h4>CODIGO DE USUARIO: {{ user.id_usuario }}</h4>
+        <h4>NOMBRE DE USUARIO: {{ user.nombre }}</h4>
+        <h4>INTETOS FALLIDOS PARA ENTRAR A LA CUENTA: {{ user.intentos }}</h4>
+        {% if user.cui == null  %}
+            <h4>TIPO DE USUARIO: EMPRESARIAL</h4>
+        {% elif user.id_empresa == null %}
+            <h4>TIPO DE USUARIO: CLIENTE INDIVIDUAL</h4>
+        {% endif %}
+        <p></p>
+        <br/>
+
+        <h2>{{ titulo }}</h2>
+        <p></p>
+        <br/>
+
+        <a class="button" href="{% url 'cliente_deposito' %}">DEPOSITAR</a>
+        <a class="button" href="{% url 'activar_cuenta' %}">ACTIVAR CUENTA</a>
+        <a class="button" href="{% url 'suspender_cuenta' %}">SUSPENDER CUENTA</a>
+        <a class="button" href="{% url 'trasnferencias_propias' %}">TRANSACCIONES ENTRE CUENTAS PROPIAS</a>
+        <a class="button" href="{% url 'trasnferencias_terceros' %}">DEPOSITAR ENTRE CUENTES DE TERCEROS</a>
+        <p></p>
+        <br/>
+
+        <table class="tabla">
+            <tr>
+                <th><strong>NO. CUENTA</strong></th>
+                <th><strong>MONTO</strong></th>
+                <th><strong>TIPO DE CUENTA</strong></th>
+                <th><strong>MONEDA QUE MANEJA</strong></th>
+                <th><strong>ESTADO</strong></th>
+            </tr>
+            {% for cuenta in cuentas %}
+                <tr>
+                    <td>{{ cuenta.id_cuenta }}</td>
+                    {% if cuenta.tipo_moneda == 'QUETZAL' %}
+                        <td>Q {{ cuenta.monto }}</td>
+                    {% elif cuenta.tipo_moneda == 'DOLLAR' %}
+                        <td>$ {{ cuenta.monto }}</td>
+                    {% endif %}
+                    <td>{{ cuenta.tipo_cuenta }}</td>
+                    <td>{{ cuenta.tipo_moneda }}</td>
+                    <td>{{ cuenta.estado }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <p></p>
+        <br/>
+        <h2>TRANSACCIONES</h2>
+        <p></p>
+        <br/>
+
+        <table class="tabla">
+            <tr>
+                <th><strong>NO. CUENTA</strong></th>
+                <th><strong>MONTO DE TRANSACCION</strong></th>
+                <th><strong>MONTO ANTES</strong></th>
+                <th><strong>MONTO DESPUES</strong></th>
+                <th><strong>MONEDA UTILIZADA</strong></th>
+                <th><strong>TRANSACCION</strong></th>
+                <th><strong>FECHA</strong></th>
+            </tr>
+            {% for transaccion in transacciones %}
+                {% if transaccion.id_cuenta.id_usuario.id_usuario ==  request.session.user %}
+                    <tr>
+                        <td>{{ transaccion.id_cuenta }}</td>
+                        {% if transaccion.tipo_moneda == 'QUETZAL' %}
+                            <td>Q {{ transaccion.monto }}</td>
+                        {% elif transaccion.tipo_moneda == 'DOLLAR' %}
+                            <td>$ {{ transaccion.monto }}</td>
+                        {% endif %}
+                        {% if transaccion.id_cuenta.tipo_moneda == 'QUETZAL' %}
+                            <td>Q {{ transaccion.monto_anterior }}</td>
+                            <td>Q {{ transaccion.monto_despues }}</td>
+                        {% elif transaccion.id_cuenta.tipo_moneda == 'DOLLAR' %}
+                            <td>$ {{ transaccion.monto_anterior }}</td>
+                            <td>$ {{ transaccion.monto_despues }}</td>
+                        {% endif %}
+                        <td>{{ transaccion.tipo_moneda }}</td>
+                        <td>{{ transaccion.tipo_transaccion }}</td>
+                        <td>{{ transaccion.fecha }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+        <p></p>
+        <br/>
+        <p></p>
+        <br/>
+    </div>
+{% endblock %}

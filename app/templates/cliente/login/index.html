@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <title>BANCA EN LINEA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    </head>
+    <body>
+
+        {% block content %}
+            <div class="formulario">
+                <div class="left">
+                    <div class="title_principal">
+                        <h2>SERVICIO DE BANCA EN LINEA</h2>
+                    </div>
+                    <h1>INICIO DE SESION</h1>
+                
+                    <p></p>
+                    <div class="formulario">
+                        <form method="POST">
+                            {{ form.as_p }}
+                            {% csrf_token %}
+                            <button type="submit">{{ texto_boton }}</button>
+                        </form>
+                    </div>
+            </div>
+        {% endblock %}
+    </body>
+</html>

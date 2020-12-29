@@ -1,0 +1,40 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+    <div class="formulario">
+        <h2>{{ titulo }}</h2>
+        <br/>
+        <a class="button" href="{% url 'admistrador_agregar_cuenta' %}">ABRIR UNA CUENTA</a>
+        <a class="button" href="{% url 'admistrador_deposito_cuenta' %}">DEPOSITO</a>
+        <a class="button" href="{% url 'admistrador_agregar_cuenta' %}">RETIRO</a>
+        <a class="button" href="{% url 'admistrador_agregar_chequera' %}">CHEQUERA</a>
+        <a class="button" href="{% url 'admistrador_cobro_cheque' %}">COBRO DE CHEQUE</a>
+        <p></p>
+        <br/>
+        <table class="tabla">
+            <tr>
+                <th><strong>NO. CUENTA</strong></th>
+                <th><strong>MONTO</strong></th>
+                <th><strong>TIPO DE CUENTA</strong></th>
+                <th><strong>TIPO DE MONEDA MANEJADA</strong></th>
+                <th><strong>USUARIO</strong></th>
+                <th><strong>ESTADO</strong></th>
+            </tr>
+            {% for cuenta in lista %}
+                <tr>
+                    <td>{{ cuenta.id_cuenta }}</td>
+                    {% if cuenta.tipo_moneda == 'QUETZAL' %}
+                        <td>Q {{ cuenta.monto }}</td>
+                    {% elif cuenta.tipo_moneda == 'DOLLAR' %}
+                        <td>$ {{ cuenta.monto }}</td>
+                    {% endif %}
+                    <td>{{ cuenta.tipo_cuenta }}</td>
+                    <td>{{ cuenta.tipo_moneda }}</td>
+                    <td>{{ cuenta.id_usuario.nombre }}</td>
+                    <td>{{ cuenta.estado }}</td>
+                </tr>
+            {% endfor %}
+
+
+        </table>
+    </div>
+{% endblock %}

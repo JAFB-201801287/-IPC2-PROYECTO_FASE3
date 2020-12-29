@@ -1,0 +1,30 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+    <div class="formulario">
+        <h2>{{ titulo }}</h2>
+        <br/>
+        <a class="button" href="{% url 'admistrador_agregar_empresa' %}">AGREGAR NUEVO CLIENTE EMPRESARIAL</a>
+        <p></p>
+        <br/>
+        <table class="tabla">
+            <tr>
+                <th><strong>ID</strong></th>
+                <th><strong>NOMBRE</strong></th>
+                <th><strong>NOMBRE COMERCIAL</strong></th>
+                <th><strong>NOMBRE DEL REPRESENTANTE</strong></th>
+                <th><strong>TIPO DE EMPRESA</strong></th>
+            </tr>
+            {% for empresa in empresas %}
+                <tr>
+                    <td>{{ empresa.id_empresa }}</td>
+                    <td>{{ empresa.nombre }}</td>
+                    <td>{{ empresa.nombre_comercial }}</td>
+                    <td>{{ empresa.nombre_representante }}</td>
+                    <td>{{ empresa.tipo_empresa }}</td>
+                </tr>
+            {% endfor %}
+
+
+        </table>
+    </div>
+{% endblock %}

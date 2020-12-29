@@ -1,0 +1,32 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+    <div class="formulario">
+        <h2>{{ titulo }}</h2>
+        <br/>
+        <a class="button" href="{% url 'admistrador_activar_usuario' %}">ACTIVAR USUARIO</a>
+        <p></p>
+        <br/>
+        <table class="tabla">
+            <tr>
+                <th><strong>NO. USUARIO</strong></th>
+                <th><strong>NOMBRE DE USUARIO</strong></th>
+                <th><strong>INTENTOS FALLIDOS</strong></th>
+                <th><strong>TIPO DE USUARIO</strong></th>
+            </tr>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id_usuario }}</td>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.intentos }}</td>
+                    {% if usuario.cui == null %}
+                        <td>CLIENTE EMPRESARIAL</td>
+                    {% elif usuario.id_empresa == null %}
+                        <td>CLIENTE INDIVIDUAL</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+
+
+        </table>
+    </div>
+{% endblock %}
