@@ -51,24 +51,7 @@ CREATE TABLE Transaccion (
     FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
 );
 
-CREATE TABLE Planilla (
-	id_planilla INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    monto FLOAT(15,2) NOT NULL,
-    monto_anterior FLOAT(15,2) NOT NULL,
-    monto_despues FLOAT(15,2) NOT NULL,
-    id_cuenta INT NOT NULL,
-    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
-);
 
-CREATE TABLE Prestamo (
-	id_prestamo INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    monto FLOAT(15,2) NOT NULL,
-    monto_anterior FLOAT(15,2) NOT NULL,
-    monto_despues FLOAT(15,2) NOT NULL,
-    tipo_prestamo VARCHAR(50) NOT NULL,
-    id_cuenta INT NOT NULL,
-    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
-);
 
 CREATE TABLE Chequera (
 	id_chequera INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -85,6 +68,103 @@ CREATE TABLE Cheque (
     id_chequera INT NOT NULL,
     nombre VARCHAR(100),
     FOREIGN KEY (id_chequera) REFERENCES Chequera(id_chequera)
+);
+
+CREATE TABLE Prestamo (
+	id_prestamo INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    descripcion VARCHAR(200) NOT NULL,
+    tipo_prestamo VARCHAR(30) NOT NULL,
+    id_usuario INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+CREATE TABLE PrestamoAutomatico (
+	id_prestamoAuto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    id_prestamo INT NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_prestamo) REFERENCES Prestamo(id_prestamo),
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
+);
+
+CREATE TABLE PagoPrestamo (
+	id_pagoPrestamo INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    interes FLOAT(3,2) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    tipo_pago VARCHAR(30) NOT NULL,
+    id_prestamo INT NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_prestamo) REFERENCES Prestamo(id_prestamo),
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
+);
+
+CREATE TABLE Tarjeta (
+	id_tarjeta INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    marca VARCHAR(30) NOT NULL,
+    puntos INT,
+    cashback INT,
+    limiteCredito FLOAT(15,2) NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
+);
+
+CREATE TABLE DetalleTarjeta (
+	id_detalleTarjeta INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    descripcion VARCHAR(200) NOT NULL,
+    monto FLOAT(15,2) NOT NULL,
+	tipo_moneda VARCHAR(50) NOT NULL,
+    id_tarjeta INT NOT NULL,
+    FOREIGN KEY (id_tarjeta) REFERENCES Tarjeta(id_tarjeta)
+);
+
+CREATE TABLE Planilla (
+	id_planilla INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    nombre_empleado VARCHAR(100) NOT NULL,
+	tipo_pago VARCHAR(30) NOT NULL,
+    id_empresa INT NOT NULL,
+	id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta),
+    FOREIGN KEY (id_empresa) REFERENCES Empresa(id_empresa)
+);
+
+CREATE TABLE Proveedor (
+	id_proveedor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    monto FLOAT(15,2) NOT NULL,
+	tipo_pago VARCHAR(30) NOT NULL,
+    id_empresa INT NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta),
+    FOREIGN KEY (id_empresa) REFERENCES Empresa(id_empresa)
+);
+
+CREATE TABLE PagoPlanilla (
+	id_pagoPlanilla INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    monto_anterior FLOAT(15,2) NOT NULL,
+    monto_despues FLOAT(15,2) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_planilla INT NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta),
+    FOREIGN KEY (id_planilla) REFERENCES Planilla(id_planilla)
+);
+
+CREATE TABLE PagoProveedor (
+	id_pagoProveedor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    monto FLOAT(15,2) NOT NULL,
+    monto_anterior FLOAT(15,2) NOT NULL,
+    monto_despues FLOAT(15,2) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_proveedor INT NOT NULL,
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta),
+    FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor)
 );
 
 SELECT * FROM Cliente;
