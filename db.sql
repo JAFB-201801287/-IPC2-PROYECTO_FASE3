@@ -187,4 +187,10 @@ SELECT * FROM Cheque;
 INSERT INTO Cheque(monto, autorizado, disponible, id_chequera) VALUES('0', 'NO', 'SI', '');
 UPDATE Cheque SET monto = '0', autorizado = 'NO' WHERE id_cheque = '1';
 UPDATE Cheque SET disponible = 'NO' WHERE id_cheque = '1';
+
+SELECT * FROM Prestamo;
 INSERT INTO Prestamo(monto, descripcion, tipo_prestamo, id_usuario) VALUES('0', '', '', '0');
+UPDATE Prestamo SET aprobado = 'SI' WHERE id_prestamo = '';
+
+SELECT * FROM PrestamoAutomatico;
+INSERT INTO PrestamoAutomatico(monto, id_prestamo, id_cuenta) VALUES('0', '', '');

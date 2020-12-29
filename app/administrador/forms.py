@@ -72,3 +72,9 @@ class a_correlativo(forms.Form):
     class Meta:
         fields = ("correlativo")
 
+class prestamo(forms.Form):
+    prestamos = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Prestamo.objects.all().filter(aprobado='NO'), empty_label="SELECCIONE NUMERO DE PRESTAMO", to_field_name="id_prestamo")
+
+    class Meta:
+        fields = ("prestamos")
+

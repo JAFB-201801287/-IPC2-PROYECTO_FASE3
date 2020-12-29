@@ -791,3 +791,71 @@ def agregar_prestamo(request):
                 
             }
     return render(request, 'cliente/formulario/index.html', variables)
+
+def auto_prestamo(request):
+    id_usuario = request.session['user']
+
+    form = prestamo_automatico()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+    form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario).filter(aprobado='SI')
+
+    titulo_pantalla = "PAGO DE CUOTA DE PRESTAMO AUTOMATICO"
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_prestamo'
+    mensaje = ''
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+
+    if (request.method == "POST"):
+        form = prestamo_automatico(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            monto = datos.get("monto")
+            cuenta = datos.get("cuenta")
+            prestamo = datos.get("prestamos")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+            #puerto = 3306
+            #Conexion a base de datos sin uso de modulos
+
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "INSERT INTO PrestamoAutomatico(monto, id_prestamo, id_cuenta) VALUES('" + str(monto) +"', '" + str(prestamo.id_prestamo) + "', '" + str(cuenta.id_cuenta) + "');"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+
+
+            mensaje = "SE A CREADO EL PAGO DE PRESTAMO AUTOMATICO"
+
+            form = prestamo_automatico()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario).filter(aprobado='SI')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
+            form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario).filter(aprobado='SI')
+            mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)

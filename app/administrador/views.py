@@ -586,3 +586,57 @@ def cobrar_cheque(request):
                 "mensaje_error": mensaje_error
             }
     return render(request, 'administrador/formulario.html', variables)
+
+#-------------------------------------------------------------------------------------------------------------
+def aceptar_prestamo(request):
+    form = prestamo()
+    titulo_pantalla = "ACEPTAR PRESTAMOS"
+    texto_boton = "ACEPTAR"
+    regresar = 'admistrador_cuenta'
+    mensaje_error = ""
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje_error": mensaje_error
+    }
+    if (request.method == "POST"):
+        form = prestamo(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            prestamos = datos.get("prestamos")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+            #puerto = 3306
+
+            #Conexion a base de datos sin uso de modulos
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "UPDATE Prestamo SET aprobado = 'SI' WHERE id_prestamo = '" + str(prestamos.id_prestamo) + "';"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+
+            form = prestamo()
+            mensaje_error = "LA ACTIVACION DE PRESTAMO SE EFECTUO CON EXITO"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje_error": mensaje_error
+            }
+        else:
+            mensaje_error = "ERROR NO SE PUDO HACER LA ACTIVACION DE PRESTAMO"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje_error": mensaje_error
+            }
+    return render(request, 'administrador/formulario.html', variables)

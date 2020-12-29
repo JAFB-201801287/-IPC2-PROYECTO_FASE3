@@ -31,4 +31,5 @@ urlpatterns = [
     path('administrador/usuario/activar', views.activar_usuario, name='admistrador_activar_usuario'),
     path('administrador/usuario/', views.lista_usuarios, name='admistrador_usuario'),
     path('administrador/cheque/', views.cobrar_cheque, name='admistrador_cobro_cheque'),
+    path('administrador/prestamo/', views.aceptar_prestamo, name='admistrador_aceptar_prestamo'),
 ]

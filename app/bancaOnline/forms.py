@@ -80,3 +80,12 @@ class buscar_prestamo(forms.Form):
 
     class Meta:
         fields = ("prestamos")
+
+class prestamo_automatico(forms.Form):
+    monto = forms.FloatField(required = True, help_text='', label='', widget=forms.NumberInput(attrs={'placeholder': 'MONTO SOLICITADO'}))
+    cuenta = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Cuenta.objects.all(), empty_label="SELECCIONE NUMERO DE CUENTA PARA REALIZAR LOS PAGOS", to_field_name="id_cuenta")
+    prestamos = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Prestamo.objects.all(), empty_label="SELECCIONE NUMERO DE PRESTAMO QUE DECEA", to_field_name="id_prestamo")
+
+    class Meta:
+        fields = ("monto","cuenta", "prestamos")
+

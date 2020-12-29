@@ -5,6 +5,7 @@
         <h2>{{ titulo }}</h2>
         <br/>
         <a class="button" href="{% url 'cliente_pprestamo' %}">PEDIR PRESTAMO</a>
+        <a class="button" href="{% url 'cliente_prestamo_auto' %}">AGREGAR PAGO DE CUOTA AUTOMATICO</a>
         <p></p>
         <form method="POST">
             {{ form.as_p }}
