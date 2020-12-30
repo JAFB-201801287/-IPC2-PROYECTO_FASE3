@@ -265,6 +265,12 @@ class Planilla(models.Model):
     id_empresa = models.ForeignKey(Empresa, models.DO_NOTHING, db_column='id_empresa')
     id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
 
+    def __str__(self):
+        return u'{0}'.format('-CODIGO DE PLANILLA: ' + str(self.id_planilla) + ' -NOMBRE EMPLEADO: ' + self.nombre_empleado + ' -MONTO A PAGAR: ' + str(self.monto))
+
+    def __unicode__(self):
+        return u'{0}'.format('-CODIGO DE PLANILLA: ' + str(self.id_planilla) + ' -NOMBRE EMPLEADO: ' + self.nombre_empleado + ' -MONTO A PAGAR: ' + str(self.monto))
+
     class Meta:
         managed = False
         db_table = 'planilla'

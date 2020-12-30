@@ -1181,3 +1181,144 @@ def lista_planilla(request):
         "lista_planillas": lista_planillas
     }
     return render(request, 'cliente/planilla/index.html',variables)
+
+def agregar_planilla(request):
+    id_usuario = request.session['user']
+    usuario = ''
+
+    try:
+        usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+
+    form = planilla()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__cui__cui=None)
+
+    titulo_pantalla = "AGREGAR PLANILLA"
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_planilla'
+    mensaje = ''
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+
+    if (request.method == "POST"):
+        form = planilla(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            nombre = datos.get("nombre")
+            monto = datos.get("monto")
+            tipo_pago = datos.get("tipo_pago")
+            cuenta = datos.get("cuenta")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "INSERT INTO Planilla(nombre_empleado, monto, tipo_pago, id_empresa, id_cuenta) VALUES('" + nombre + "', '" + str(monto) + "', '" + tipo_pago + "', '" + str(usuario.id_empresa.id_empresa) + "', '" + str(cuenta.id_cuenta) + "');"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+
+            mensaje = "SE LOGRO AGREGAR LA PLANILLA"
+
+            form = planilla()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__cui__cui=None)
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__cui__cui=None)
+            mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)
+
+
+def seleccionar_planilla(request):
+    id_usuario = request.session['user']
+    usuario = ''
+
+    try:
+        usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+
+    form = evento_planilla()
+    form.fields['planilla'].queryset = Planilla.objects.all().select_related('id_empresa').filter(id_empresa__id_empresa=usuario.id_empresa.id_empresa)
+
+    titulo_pantalla = "AGREGAR PLANILLA"
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_planilla'
+    mensaje = ''
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+
+    if (request.method == "POST"):
+        form = evento_planilla(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            planilla = datos.get("planilla")
+            evento = datos.get("evento")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+
+            if(evento == 'ELIMINAR'):
+                db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                c = db.cursor()
+                consulta = "DELETE FROM Planilla WHERE id_planilla = '" + str(planilla.id_planilla) + "';"
+                c.execute(consulta)
+                db.commit()
+                c.close()
+            elif(evento == 'EDITAR'):
+                pass
+
+            mensaje = "SE LOGRO ELIMINAR LA PLANILLA"
+            form = evento_planilla()
+            form.fields['planilla'].queryset = Planilla.objects.all().select_related('id_empresa').filter(id_empresa__id_empresa=usuario.id_empresa.id_empresa)
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['planilla'].queryset = Planilla.objects.all().select_related('id_empresa').filter(id_empresa__id_empresa=usuario.id_empresa.id_empresa)
+            mensaje = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)

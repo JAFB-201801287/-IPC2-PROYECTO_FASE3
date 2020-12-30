@@ -203,4 +203,11 @@ INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_usuario) V
 SELECT * FROM PagoPrestamo;
 
 SELECT * FROM Proveedor;
-INSERT INTO Tarjeta(nombre, monto, tipo_pago, id_empresa, id_cuenta) VALUES('0', '', '0', '0', '0', '');
+INSERT INTO Tarjeta(nombre, monto, tipo_pago, id_empresa, id_cuenta) VALUES('0', '', '0', '0', '');
+
+SELECT * FROM PagoProveedor;
+INSERT INTO PagoProveedor(monto, monto_anterior, monto_despues, id_proveedor, id_cuenta) VALUES('', '0', '0', '', '');
+
+SELECT * FROM Planilla;
+DELETE FROM Planilla WHERE id_planilla = '';
+INSERT INTO Planilla(nombre_empleado, monto, tipo_pago, id_empresa, id_cuenta) VALUES('', '', '', '', '');
