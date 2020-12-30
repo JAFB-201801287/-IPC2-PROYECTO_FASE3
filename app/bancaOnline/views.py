@@ -893,7 +893,7 @@ def pagar_automatico(request):
                 usuario = Usuario.objects.get(id_usuario = id_usuario)
 
                 pa = Prestamoautomatico.objects.filter(id_prestamo = id_prestamo).select_related('id_prestamo').last()
-                if(usuario.contrasena == contrasena):
+                if(usuario.nombre == nombre_usuario and usuario.contrasena == contrasena):
                     monto_despues = (pa.id_prestamo.monto - pa.monto)
                     db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
                     c = db.cursor()
@@ -965,12 +965,14 @@ def lista_proveedores(request):
     try:
         usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
         proveedores = Proveedor.objects.select_related('id_cuenta').filter(id_empresa=usuario.id_empresa.id_empresa)
+        pagos_provedores = Pagoproveedor.objects.select_related('id_proveedor').filter(id_proveedor__id_empresa__id_empresa=usuario.id_empresa.id_empresa)
     except ObjectDoesNotExist:
         print("NO HAY")
 
     variables = {
         "titulo" : titulo_pantalla,
-        "proveedores": proveedores
+        "proveedores": proveedores,
+        "pagos_provedores": pagos_provedores
     }
     return render(request, 'cliente/proveedor/index.html',variables)
 
@@ -1035,6 +1037,126 @@ def agregar_proveedor(request):
         else:
             form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA')
             mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)
+
+def pagar_proveedor(request): 
+    id_usuario = request.session['user']
+    form = pagar_provee()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(tipo_cuenta='CUENTA DE AHORRO A PLAZO FIJO')
+
+    titulo_pantalla = "PAGO A PROVEEDORES "
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_proveedor'
+    mensaje = ''
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+    if (request.method == "POST"):
+        form = pagar_provee(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+
+            nombre_usuario = datos.get("nombre_usuario")
+            contrasena = datos.get("contrasena")
+            cuenta = datos.get("cuenta")
+
+
+            try:
+                host = 'localhost'
+                db_name = 'banca_virtual'
+                user = 'root'
+                contra = 'FloresB566+'
+
+                usuario = Usuario.objects.get(id_usuario = id_usuario)
+
+                if(usuario.nombre == nombre_usuario and usuario.contrasena == contrasena):
+                    proveedores = Proveedor.objects.select_related('id_cuenta').all().filter(id_empresa=usuario.id_empresa.id_empresa) 
+                    
+                    for proveedor in proveedores:
+                        monto = proveedor.monto
+                        cuenta1 = cuenta
+                        cuenta2 = proveedor.id_cuenta
+                        if(cuenta1.id_cuenta != cuenta2.id_cuenta):
+                            if(cuenta1.tipo_moneda == cuenta2.tipo_moneda):
+                                monto1_anterior = cuenta1.monto
+                                monto1_despues = (cuenta1.monto - monto)
+                                monto2_anterior = cuenta2.monto
+                                monto2_despues = (cuenta2.monto + monto)
+                            elif(cuenta1.tipo_moneda == 'DOLLAR' and cuenta2.tipo_moneda == 'QUETZAL'):
+                                monto1_anterior = cuenta1.monto
+                                monto1_despues = (cuenta1.monto - (monto/7.87))
+                                monto2_anterior = cuenta2.monto
+                                monto2_despues = (cuenta2.monto + (monto/7.87))
+                            elif(cuenta1.tipo_moneda == 'QUETZAL' and cuenta2.tipo_moneda == 'DOLLAR'):
+                                monto1_anterior = cuenta1.monto
+                                monto1_despues = (cuenta1.monto - (monto*7.60))
+                                monto2_anterior = cuenta2.monto
+                                monto2_despues = (cuenta2.monto + (monto*7.60))
+
+                        db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                        c = db.cursor()
+                        consulta = "INSERT INTO PagoProveedor(monto, monto_anterior, monto_despues, id_proveedor, id_cuenta) VALUES('" + str(monto) + "', '0', '0', '" + str(proveedor.id_proveedor) + "', '" + str(cuenta.id_cuenta) + "');"
+                        c.execute(consulta)
+                        db.commit()
+                        c.close()
+
+                        db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                        c = db.cursor()
+                        consulta = "INSERT INTO Transaccion(monto, monto_anterior, monto_despues, tipo_moneda, tipo_transaccion, id_cuenta) VALUES('" + str(monto) + "', '" + str(monto1_anterior) + "', '" + str(monto1_despues) + "', '" + cuenta1.tipo_moneda + "', 'PAGO A PROVEEDOR', '" + str(cuenta1.id_cuenta) +"');"
+                        c.execute(consulta)
+                        db.commit()
+                        c.close()
+
+                        db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                        c = db.cursor()
+                        consulta = "UPDATE Cuenta SET monto = '" + str(monto1_despues) + "' WHERE id_cuenta = '" + str(cuenta1.id_cuenta) + "';"
+                        c.execute(consulta)
+                        db.commit()
+                        c.close()
+
+                        db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                        c = db.cursor()
+                        consulta = "INSERT INTO Transaccion(monto, monto_anterior, monto_despues, tipo_moneda, tipo_transaccion, id_cuenta) VALUES('" + str(monto) + "', '" + str(monto2_anterior) + "', '" + str(monto2_despues) + "', '" + cuenta1.tipo_moneda + "', 'PAGO POR SER PROVEEDOR', '" + str(cuenta2.id_cuenta) +"');"
+                        c.execute(consulta)
+                        db.commit()
+                        c.close()
+
+                        db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                        c = db.cursor()
+                        consulta = "UPDATE Cuenta SET monto = '" + str(monto2_despues) + "' WHERE id_cuenta = '" + str(cuenta2.id_cuenta) + "';"
+                        c.execute(consulta)
+                        db.commit()
+                        c.close()
+
+                    mensaje = "SE A PAGADO"
+                else: 
+                    mensaje = "ERROR CREDENCIALES DE USUARIO NO ACEPTADAS"
+            except ObjectDoesNotExist:
+                print('No existe')
+
+            form = pagar_provee()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(tipo_cuenta='CUENTA DE AHORRO A PLAZO FIJO')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(tipo_cuenta='CUENTA DE AHORRO A PLAZO FIJO')
             variables = {
                 "titulo" : titulo_pantalla,
                 "texto_boton": texto_boton,

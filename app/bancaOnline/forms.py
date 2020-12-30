@@ -99,3 +99,11 @@ class proveedor(forms.Form):
     class Meta:
         fields = ("nombre","monto", "tipo_pago", "cuenta")
 
+class pagar_provee(forms.Form):
+    nombre_usuario = forms.CharField(required = True, max_length=20, help_text='', label='', widget=forms.TextInput(attrs={'placeholder': 'NOMBRE DE USUARIO', 'class': 'text_box'}))
+    contrasena = forms.CharField(required = True, max_length=20, help_text='', label='', widget=forms.PasswordInput(attrs={'placeholder': 'CONTRASEÑA', 'class': 'text_box'}))
+    cuenta = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Cuenta.objects.all(), empty_label="SELECCIONE NUMERO DE CUENTA PARA REALIZAR LOS PAGOS", to_field_name="id_cuenta")
+
+    class Meta:
+        fields = ("nombre_usuario","contrasena", "cuenta")
+

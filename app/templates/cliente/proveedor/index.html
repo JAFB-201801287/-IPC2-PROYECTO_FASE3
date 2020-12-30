@@ -7,7 +7,7 @@
         <a class="button" href="{% url 'cliente_proveedor_agregar' %}">AGREGAR PROVEEDOR</a>
         <a class="button" href="{% url 'cliente_pprestamo' %}">EDITAR PROVEEDOR</a>
         <a class="button" href="{% url 'cliente_pprestamo' %}">ELIMINAR PROVEEDOR</a>
-        <a class="button" href="{% url 'cliente_prestamo_auto' %}">PAGAR</a>
+        <a class="button" href="{% url 'cliente_proveedor_pagar' %}">PAGAR</a>
         <p></p>
         <br/>
 
@@ -24,6 +24,27 @@
                         <td>{{ p.monto }}</td>
                         <td>{{ p.tipo_pago }}</td>
                         <td>{{ p.id_cuenta.id_cuenta }}</td>
+                    </tr>
+            {% endfor %}
+        </table>
+
+        <br/>
+        <h3>PAGOS A PROVEEDORES REALIZADOS</h3>
+        <br/>
+
+        <table class="tabla">
+            <tr>
+                <th><strong>#</strong></th>
+                <th><strong>MONTO PAGADO</strong></th>
+                <th><strong>NOMBRE PROVEEDOR</strong></th>
+                <th><strong>FECHA</strong></th>
+            </tr>
+            {% for pp in pagos_provedores %}
+                    <tr>
+                        <td>{{ pp.id_pagoproveedor }}</td>
+                        <td>{{ pp.monto }}</td>
+                        <td>{{ pp.id_proveedor.nombre }}</td>
+                        <td>{{ pp.fecha }}</td>
                     </tr>
             {% endfor %}
         </table>
