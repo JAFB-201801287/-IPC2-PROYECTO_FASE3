@@ -1165,3 +1165,19 @@ def pagar_proveedor(request):
                 "mensaje": mensaje
             }
     return render(request, 'cliente/formulario/index.html', variables)
+
+def lista_planilla(request):
+    titulo_pantalla = "PLANILLA DE EMPLEADOS"
+    id_usuario = request.session['user']
+
+    try:
+        usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
+        lista_planillas = Planilla.objects.select_related('id_cuenta').filter(id_empresa=usuario.id_empresa.id_empresa)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "lista_planillas": lista_planillas
+    }
+    return render(request, 'cliente/planilla/index.html',variables)

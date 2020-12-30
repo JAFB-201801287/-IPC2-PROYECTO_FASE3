@@ -38,5 +38,6 @@ urlpatterns = [
     path('cliente/cuenta/estado/', views.estado_cuenta, name='cliente_cuenta_estado'),
     path('cliente/proveedor/', views.lista_proveedores, name='cliente_proveedor'),
     path('cliente/proveedor/agregar/', views.agregar_proveedor, name='cliente_proveedor_agregar'),
-    path('cliente/proveedor/pagar/', views.pagar_proveedor, name='cliente_proveedor_pagar')
+    path('cliente/proveedor/pagar/', views.pagar_proveedor, name='cliente_proveedor_pagar'),
+    path('cliente/planilla/', views.lista_planilla, name='cliente_planilla')
 ]
