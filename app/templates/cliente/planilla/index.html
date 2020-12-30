@@ -6,7 +6,7 @@
         <br/>
         <a class="button" href="{% url 'cliente_planilla_agregar' %}">AGREGAR PLANILLA</a>
         <a class="button" href="{% url 'cliente_planilla_seleccionar' %}">EVENTO DE PLANILLA</a>
-        <a class="button" href="{% url 'cliente_proveedor_pagar' %}">PAGAR</a>
+        <a class="button" href="{% url 'cliente_planilla_pagar' %}">PAGAR</a>
         <p></p>
         <br/>
 
@@ -25,6 +25,27 @@
                         <td>{{ p.monto }}</td>
                         <td>{{ p.tipo_pago }}</td>
                         <td>{{ p.id_cuenta.id_cuenta }}</td>
+                    </tr>
+            {% endfor %}
+        </table>
+
+        <br/>
+        <h3>PAGOS A EMPLEADOS POR PLANILLA</h3>
+        <br/>
+
+        <table class="tabla">
+            <tr>
+                <th><strong>#</strong></th>
+                <th><strong>MONTO PAGADO</strong></th>
+                <th><strong>NOMBRE EMPLEADO</strong></th>
+                <th><strong>FECHA</strong></th>
+            </tr>
+            {% for pp in pagos_planilla %}
+                    <tr>
+                        <td>{{ pp.id_pagoplanilla }}</td>
+                        <td>{{ pp.monto }}</td>
+                        <td>{{ pp.id_planilla.nombre_empleado }}</td>
+                        <td>{{ pp.fecha }}</td>
                     </tr>
             {% endfor %}
         </table>
