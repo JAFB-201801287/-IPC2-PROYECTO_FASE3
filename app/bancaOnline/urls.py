@@ -44,4 +44,5 @@ urlpatterns = [
     path('cliente/planilla/seleccionar/', views.seleccionar_planilla, name='cliente_planilla_seleccionar'),
     path('cliente/planilla/editar/', views.editar_planilla, name='cliente_planilla_editar'),
     path('cliente/planilla/pagar/', views.pagar_planilla, name='cliente_planilla_pagar'),
+    path('cliente/tarjeta/detalle/', views.detalle_tarjeta, name='cliente_detalle_tarjeta'),
 ]

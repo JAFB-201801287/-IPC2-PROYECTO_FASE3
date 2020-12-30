@@ -126,3 +126,9 @@ class evento_planilla(forms.Form):
     class Meta:
         fields = ("planilla","evento")
 
+class buscar_tarjeta(forms.Form):
+    tarjeta = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Tarjeta.objects.all(), empty_label="SELECCIONE NUMERO DE TARJETA", to_field_name="id_tarjeta")
+
+    class Meta:
+        fields = ("tarjeta")
+

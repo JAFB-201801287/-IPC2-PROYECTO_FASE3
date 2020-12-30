@@ -1522,3 +1522,50 @@ def pagar_planilla(request):
                 "mensaje": mensaje
             }
     return render(request, 'cliente/formulario/index.html', variables)
+
+
+def detalle_tarjeta(request):
+    id_usuario = request.session['user']
+    form = buscar_tarjeta()
+    detalle_tarjetas = []
+
+    titulo_pantalla = "DETALLE PRESTAMO"
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_inicio'
+
+    form.fields['tarjeta'].queryset = Tarjeta.objects.all().filter(id_usuario=id_usuario)
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "detalle_tarjetas": detalle_tarjetas
+    }
+    if (request.method == "POST"):
+        form = buscar_tarjeta(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            tarjeta = datos.get("tarjeta")
+
+            detalle_tarjetas = Detalletarjeta.objects.select_related('id_tarjeta').filter(id_tarjeta__id_usuario=id_usuario)
+
+            form.fields['tarjeta'].queryset = Tarjeta.objects.all().filter(id_usuario=id_usuario)
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "detalle_tarjetas": detalle_tarjetas
+            }
+        else:
+            form.fields['tarjeta'].queryset = Tarjeta.objects.all().filter(id_usuario=id_usuario)
+            mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "detalle_tarjetas": detalle_tarjetas
+                
+            }
+    return render(request, 'cliente/tarjeta/index.html', variables)

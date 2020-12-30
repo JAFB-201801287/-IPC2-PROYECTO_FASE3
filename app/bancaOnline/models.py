@@ -328,6 +328,13 @@ class Tarjeta(models.Model):
     limitecredito = models.FloatField(db_column='limiteCredito')  # Field name made lowercase.
     id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
 
+    
+    def __str__(self):
+        return u'{0}'.format('-NUMERO DE TARJETA: ' + str(self.id_tarjeta))
+
+    def __unicode__(self):
+        return u'{0}'.format('-NUMERO DE TARJETA: ' + str(self.id_tarjeta))
+
     class Meta:
         managed = False
         db_table = 'tarjeta'
