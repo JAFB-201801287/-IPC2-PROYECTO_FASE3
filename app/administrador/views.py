@@ -640,3 +640,58 @@ def aceptar_prestamo(request):
                 "mensaje_error": mensaje_error
             }
     return render(request, 'administrador/formulario.html', variables)
+
+#-------------------------------------------------------------------------------------------------------------
+def agregar_tarjeta(request):
+    form = tarjeta_credito()
+    titulo_pantalla = "CREAR TARJETA DE CREDITO"
+    texto_boton = "ACEPTAR"
+    regresar = 'admistrador_usuario'
+    mensaje_error = ""
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje_error": mensaje_error
+    }
+    if (request.method == "POST"):
+        form = tarjeta_credito(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            usuario = datos.get("usuario")
+            marca = datos.get("marca")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+            #puerto = 3306
+
+            #Conexion a base de datos sin uso de modulos
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_usuario) VALUES('0', '" + marca + "', '0', '0', '0', '" + str(usuario.id_usuario) + "');"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+
+            form = tarjeta_credito()
+            mensaje_error = "LA CREACION DE LA TARJETA DE CREDITO FUE EXITOSA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje_error": mensaje_error
+            }
+        else:
+            mensaje_error = "ERROR NO SE PUDO CREAR LA TARJETA DE CREDITO"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje_error": mensaje_error
+            }
+    return render(request, 'administrador/formulario.html', variables)

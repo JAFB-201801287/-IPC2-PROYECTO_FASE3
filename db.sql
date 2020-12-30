@@ -108,8 +108,8 @@ CREATE TABLE Tarjeta (
     puntos INT,
     cashback INT,
     limiteCredito FLOAT(15,2) NOT NULL,
-    id_cuenta INT NOT NULL,
-    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
+    id_usuario INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
 CREATE TABLE DetalleTarjeta (
@@ -181,7 +181,6 @@ UPDATE Cuenta SET monto = '' WHERE id_cuenta = '';
 SELECT * FROM Transaccion;
 INSERT INTO Transaccion(monto, monto_anterior, monto_despues, tipo_moneda, tipo_transaccion, id_cuenta) VALUES('', '', '', '', '', '');
 SELECT * FROM Chequera;
-INSERT INTO Transaccion(acabada, id_cuenta) VALUES('', '');
 DELETE FROM Chequera WHERE id_chequera = '3';
 SELECT * FROM Cheque;
 INSERT INTO Cheque(monto, autorizado, disponible, id_chequera) VALUES('0', 'NO', 'SI', '');
@@ -194,3 +193,11 @@ UPDATE Prestamo SET aprobado = 'SI' WHERE id_prestamo = '';
 
 SELECT * FROM PrestamoAutomatico;
 INSERT INTO PrestamoAutomatico(monto, id_prestamo, id_cuenta) VALUES('0', '', '');
+
+SELECT * FROM PagoPrestamo;
+INSERT INTO PagoPrestamo(monto, interes, tipo_pago, id_prestamo, id_cuenta) VALUES('', '0', 'PAGO AUTOMATICO', '', '');
+
+SELECT * FROM Tarjeta;
+INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_usuario) VALUES('0', '', '0', '0', '0', '');
+
+SELECT * FROM PagoPrestamo;

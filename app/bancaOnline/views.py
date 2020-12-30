@@ -30,6 +30,12 @@ def login(request):
                 user = Usuario.objects.get(nombre = nombre_usuario)
                 if(user.contrasena == contrasena and user.intentos < 3):
                     request.session["user"] = user.id_usuario
+
+                    if(user.id_empresa != None):
+                        request.session["esEmpresa"] = True
+                    else:
+                        request.session["esEmpresa"] = False
+
                     return redirect('/cliente/inicio/')
                 else: 
                     intentos = user.intentos + 1
@@ -87,16 +93,9 @@ def inicio(request):
             datos = form.cleaned_data
             cuenta = datos.get("cuenta")
 
+            request.session['id_cuenta'] = cuenta.id_cuenta
 
-            form = estado()
-            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
-            variables = {
-                "titulo" : titulo_pantalla,
-                "cuentas": cuentas,
-                "prestamos": prestamos,
-                "user": user,
-                "form": form
-            }
+            return redirect('/cliente/cuenta/estado/')
         else:
             form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA')
             variables = {
@@ -710,6 +709,7 @@ def lista_prestamo(request):
             prestamo = datos.get("prestamos")
 
             pagos_prestamo = Pagoprestamo.objects.select_related().all().filter(id_prestamo=prestamo.id_prestamo)
+            request.session['prestamo'] = prestamo.id_prestamo
             bandera = True
 
             form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario)
@@ -739,7 +739,7 @@ def agregar_prestamo(request):
     form = prestamo()
     titulo_pantalla = "PEDIR PRESTAMO"
     texto_boton = "ACEPTAR"
-    regresar = 'admistrador_cuenta'
+    regresar = 'cliente_prestamo'
     mensaje_error = ""
     variables = {
         "titulo" : titulo_pantalla,
@@ -859,3 +859,117 @@ def auto_prestamo(request):
                 "mensaje": mensaje
             }
     return render(request, 'cliente/formulario/index.html', variables)
+
+def pagar_automatico(request): 
+    id_usuario = request.session['user']
+    id_prestamo = request.session['prestamo'] 
+    form = inicio_sesion()
+    titulo_pantalla = "PAGO AUTOMATICO PRESTAMO NO. " + str(id_prestamo)
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_prestamo'
+    mensaje = ''
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+    if (request.method == "POST"):
+        form = inicio_sesion(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+
+            nombre_usuario = datos.get("nombre_usuario")
+            contrasena = datos.get("contrasena")
+
+
+            try:
+                host = 'localhost'
+                db_name = 'banca_virtual'
+                user = 'root'
+                contra = 'FloresB566+'
+
+                usuario = Usuario.objects.get(id_usuario = id_usuario)
+
+                pa = Prestamoautomatico.objects.filter(id_prestamo = id_prestamo).select_related('id_prestamo').last()
+                if(usuario.contrasena == contrasena):
+                    monto_despues = (pa.id_prestamo.monto - pa.monto)
+                    db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                    c = db.cursor()
+                    consulta = "INSERT INTO Transaccion(monto, monto_anterior, monto_despues, tipo_moneda, tipo_transaccion, id_cuenta) VALUES('" + str(pa.monto) + "', '" + str(pa.id_cuenta.monto) + "', '" + str(monto_despues) + "', '" + pa.id_cuenta.tipo_moneda + "', 'PAGO PRESTAMO', '" + str(pa.id_cuenta.id_cuenta) +"');"
+                    c.execute(consulta)
+                    db.commit()
+                    c.close()
+
+                    db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                    c = db.cursor()
+                    consulta = "UPDATE Prestamo SET monto = '" + str(monto_despues) + "' WHERE id_prestamo = '" + str(pa.id_prestamo.id_prestamo) +"';"
+                    c.execute(consulta)
+                    db.commit()
+                    c.close()
+
+                    db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                    c = db.cursor()
+                    consulta = "INSERT INTO PagoPrestamo(monto, interes, tipo_pago, id_prestamo, id_cuenta) VALUES('" + str(pa.monto) + "', '0', 'PAGO AUTOMATICO', '" + str(id_prestamo) + "', '" + str(pa.id_cuenta.id_cuenta) + "');"
+                    c.execute(consulta)
+                    db.commit()
+                    c.close()
+
+                    mensaje = f"SE A PAGADO { str(pa.monto) }"
+                else: 
+                    mensaje = "ERROR CREDENCIALES DE USUARIO NO ACEPTADAS"
+            except ObjectDoesNotExist:
+                print('No existe')
+
+            form = inicio_sesion()
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)
+
+
+def estado_cuenta(request):
+    id_cuenta = request.session['id_cuenta']
+    titulo_pantalla = "DETALLE CUENTA"
+
+    try:
+        cuenta_cliente = Cuenta.objects.get(id_cuenta=id_cuenta) 
+        transacciones = Transaccion.objects.all().select_related('id_cuenta').filter(id_cuenta=id_cuenta)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "cuenta_cliente": cuenta_cliente,
+        "transacciones": transacciones
+    }
+    return render(request, 'cliente/cuenta/index.html',variables)
+
+def lista_proveedores(request):
+    titulo_pantalla = "PROVEEDORES"
+    id_usuario = request.session['user']
+
+    try:
+        usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
+        proveedores = Proveedor.objects.select_related('id_cuenta').filter(id_empresa=usuario.id_empresa.id_empresa)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "proveedores": proveedores
+    }
+    return render(request, 'cliente/proveedor/index.html',variables)

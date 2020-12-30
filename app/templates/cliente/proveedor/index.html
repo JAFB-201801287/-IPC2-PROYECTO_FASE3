@@ -1,0 +1,34 @@
+{% extends 'cliente/base.html' %}
+{% block content %}
+    <div class="formulario">
+
+        <h2>{{ titulo }}</h2>
+        <br/>
+        <a class="button" href="{% url 'cliente_pprestamo' %}">AGREGAR PROVEEDOR</a>
+        <a class="button" href="{% url 'cliente_pprestamo' %}">EDITAR PROVEEDOR</a>
+        <a class="button" href="{% url 'cliente_pprestamo' %}">ELIMINAR PROVEEDOR</a>
+        <a class="button" href="{% url 'cliente_prestamo_auto' %}">PAGAR</a>
+        <p></p>
+        <br/>
+
+        <table class="tabla">
+            <tr>
+                <th><strong>NOMBRE</strong></th>
+                <th><strong>MONTO A PAGAR</strong></th>
+                <th><strong>TIPO DE PAGO</strong></th>
+                <th><strong>NOMBRE DE EMPRESA</strong></th>
+                <th><strong>NO. CUENTA PROVEEDOR</strong></th>
+            </tr>
+            {% for p in proveedores %}
+                    <tr>
+                        <td>{{ p.nombre }}</td>
+                        <td>{{ p.monto }}</td>
+                        <td>{{ p.tipo_pago }}</td>
+                        <td>{{ p.id_empresa.nombre }}</td>
+                        <td>{{ p.id_cuenta.id_cuenta }}</td>
+                    </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+{% endblock %}

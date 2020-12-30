@@ -78,3 +78,11 @@ class prestamo(forms.Form):
     class Meta:
         fields = ("prestamos")
 
+class tarjeta_credito(forms.Form):
+    usuario = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Usuario.objects.all(), empty_label="SELECCIONE UN USUARIO", to_field_name="id_usuario")
+    MARCA = [('', 'SELECCIONAR MARCA DE TARJETA DE CREDITO'), ('PREFEPUNTOS', 'PREFEPUNTOS'), ('CASHBACK', 'CASHBACK')]
+    marca = forms.ChoiceField(required = True, help_text='', label='', choices=MARCA)
+
+    class Meta:
+        fields = ("usuario", "marca")
+

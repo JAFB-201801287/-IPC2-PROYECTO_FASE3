@@ -14,6 +14,10 @@
             <li><a href="{% url 'cliente_inicio' %}">VER CUENTAS</a></li>
             <li><a href="{% url 'cliente_chequera' %}">CHEQUERA</a></li>
             <li><a href="{% url 'cliente_prestamo' %}">PRESTAMO</a></li>
+            {% if request.session.esEmpresa %}
+                <li><a href="{% url 'cliente_proveedor' %}">PROVEEDORES</a></li>
+                <li><a href="{% url 'cliente_prestamo' %}">PLANILLA</a></li>
+            {% endif %}
         </ul>
 
         <div class="title_principal">

@@ -290,7 +290,7 @@ class Tarjeta(models.Model):
     puntos = models.IntegerField(blank=True, null=True)
     cashback = models.IntegerField(blank=True, null=True)
     limitecredito = models.FloatField(db_column='limiteCredito')  # Field name made lowercase.
-    id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
+    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
 
     class Meta:
         managed = False

@@ -32,4 +32,5 @@ urlpatterns = [
     path('administrador/usuario/', views.lista_usuarios, name='admistrador_usuario'),
     path('administrador/cheque/', views.cobrar_cheque, name='admistrador_cobro_cheque'),
     path('administrador/prestamo/', views.aceptar_prestamo, name='admistrador_aceptar_prestamo'),
+    path('administrador/tarjeta/agregar', views.agregar_tarjeta, name='admistrador_agregar_tarjeta'),
 ]

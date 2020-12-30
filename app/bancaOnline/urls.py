@@ -34,4 +34,7 @@ urlpatterns = [
     path('cliente/prestamo/', views.lista_prestamo, name='cliente_prestamo'),
     path('cliente/prestamo/agregar/', views.agregar_prestamo, name='cliente_pprestamo'),
     path('cliente/prestamo/pago-automatico/', views.auto_prestamo, name='cliente_prestamo_auto'),
+    path('cliente/prestamo/pago-automatico1/', views.pagar_automatico, name='cliente_prestamo_auto1'),
+    path('cliente/cuenta/estado/', views.estado_cuenta, name='cliente_cuenta_estado'),
+    path('cliente/proveedor/', views.lista_proveedores, name='cliente_proveedor'),
 ]

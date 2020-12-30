@@ -1,0 +1,64 @@
+{% extends 'cliente/base.html' %}
+{% block content %}
+    
+    {% comment 'Session' %}
+        <p>{{ request.session.user }}</p>
+    {% endcomment %}
+
+    <div class="formulario">
+
+        <h2>{{ titulo }}</h2>
+        <p></p>
+        <br/>
+
+        <h4>NO. DE CUENTA: {{ cuenta_cliente.id_cuenta }}</h4>
+        <h4>MONEDA QUE MANEJA: {{ cuenta_cliente.tipo_moneda }}</h4>
+        {% if cuenta_cliente.tipo_moneda == 'QUETZAL'  %}
+            <h4>MONTO: Q {{ cuenta_cliente.monto }}</h4>
+        {% elif cuenta_cliente.tipo_moneda == 'DOLLAR' %}
+            <h4>MONTO: $ {{ cuenta_cliente.monto }}</h4>
+        {% endif %}
+        <p></p>
+        <br/>
+
+        <a class="button" href="{% url 'cliente_inicio' %}">REGRESAR</a>
+        <p></p>
+        <br/>
+
+        <h2>TRANSACCIONES</h2>
+        <p></p>
+        <br/>
+
+        <table class="tabla">
+            <tr>
+                <th><strong>NO. CUENTA</strong></th>
+                <th><strong>MONTO DE TRANSACCION</strong></th>
+                <th><strong>MONTO ANTES</strong></th>
+                <th><strong>MONTO DESPUES</strong></th>
+                <th><strong>MONEDA UTILIZADA</strong></th>
+                <th><strong>TRANSACCION</strong></th>
+                <th><strong>FECHA</strong></th>
+            </tr>
+            {% for transaccion in transacciones %}
+                    <tr>
+                        <td>{{ transaccion.id_cuenta }}</td>
+                        {% if transaccion.tipo_moneda == 'QUETZAL' %}
+                            <td>Q {{ transaccion.monto }}</td>
+                        {% elif transaccion.tipo_moneda == 'DOLLAR' %}
+                            <td>$ {{ transaccion.monto }}</td>
+                        {% endif %}
+                        {% if transaccion.id_cuenta.tipo_moneda == 'QUETZAL' %}
+                            <td>Q {{ transaccion.monto_anterior }}</td>
+                            <td>Q {{ transaccion.monto_despues }}</td>
+                        {% elif transaccion.id_cuenta.tipo_moneda == 'DOLLAR' %}
+                            <td>$ {{ transaccion.monto_anterior }}</td>
+                            <td>$ {{ transaccion.monto_despues }}</td>
+                        {% endif %}
+                        <td>{{ transaccion.tipo_moneda }}</td>
+                        <td>{{ transaccion.tipo_transaccion }}</td>
+                        <td>{{ transaccion.fecha }}</td>
+                    </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
