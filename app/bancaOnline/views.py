@@ -1299,7 +1299,8 @@ def seleccionar_planilla(request):
                 db.commit()
                 c.close()
             elif(evento == 'EDITAR'):
-                pass
+                #request.session['planilla'] = planilla.id_planilla
+                return redirect('/cliente/planilla/editar/')
 
             mensaje = "SE LOGRO ELIMINAR LA PLANILLA"
             form = evento_planilla()
@@ -1314,6 +1315,83 @@ def seleccionar_planilla(request):
         else:
             form.fields['planilla'].queryset = Planilla.objects.all().select_related('id_empresa').filter(id_empresa__id_empresa=usuario.id_empresa.id_empresa)
             mensaje = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)
+
+
+def editar_planilla(request):
+    id_usuario = request.session['user']
+    id_planilla = request.session['planilla']
+    usuario = ''
+    planilla1 = ''
+
+    try:
+        usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
+        planilla1 = Planilla.objects.select_related('id_cuenta').get(id_planilla=id_planilla)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+
+    form = planilla()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__cui__cui=None)
+    form.fields['nombre'].initial = planilla1.nombre_empleado
+    form.fields['monto'].initial = planilla1.monto
+    form.fields['tipo_pago'].initial = planilla1.tipo_pago
+    form.fields['cuenta'].initial = planilla1.id_cuenta
+
+    titulo_pantalla = "AGREGAR PLANILLA"
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_planilla'
+    mensaje = ''
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+
+    if (request.method == "POST"):
+        form = planilla(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            nombre = datos.get("nombre")
+            monto = datos.get("monto")
+            tipo_pago = datos.get("tipo_pago")
+            cuenta = datos.get("cuenta")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "UPDATE Planilla SET nombre_empleado = '" + nombre + "', tipo_pago = '" + tipo_pago + "', id_cuenta = '" + str(cuenta.id_cuenta) + "', monto = '" + str(monto) +"'  WHERE id_planilla = '" + str(planilla1.id_planilla) + "';"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+
+            mensaje = "SE LOGRO EDITAR LA PLANILLA"
+
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__cui__cui=None)
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__cui__cui=None)
+            mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
             variables = {
                 "titulo" : titulo_pantalla,
                 "texto_boton": texto_boton,

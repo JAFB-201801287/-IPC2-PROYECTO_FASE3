@@ -42,4 +42,5 @@ urlpatterns = [
     path('cliente/planilla/', views.lista_planilla, name='cliente_planilla'),
     path('cliente/planilla/agregar/', views.agregar_planilla, name='cliente_planilla_agregar'),
     path('cliente/planilla/seleccionar/', views.seleccionar_planilla, name='cliente_planilla_seleccionar'),
+    path('cliente/planilla/editar/', views.editar_planilla, name='cliente_planilla_editar'),
 ]
