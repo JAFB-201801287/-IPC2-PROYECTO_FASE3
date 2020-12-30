@@ -973,3 +973,73 @@ def lista_proveedores(request):
         "proveedores": proveedores
     }
     return render(request, 'cliente/proveedor/index.html',variables)
+
+def agregar_proveedor(request):
+    id_usuario = request.session['user']
+    usuario = ''
+
+    try:
+        usuario = Usuario.objects.select_related('id_empresa').get(id_usuario=id_usuario)
+    except ObjectDoesNotExist:
+        print("NO HAY")
+
+
+    form = proveedor()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__id_empresa__id_empresa=None)
+
+    titulo_pantalla = "AGREGAR PROVEEDOR"
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_proveedor'
+    mensaje = ''
+
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+
+    if (request.method == "POST"):
+        form = proveedor(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            nombre = datos.get("nombre")
+            monto = datos.get("monto")
+            tipo_pago = datos.get("tipo_pago")
+            cuenta = datos.get("cuenta")
+
+            host = 'localhost'
+            db_name = 'banca_virtual'
+            user = 'root'
+            contra = 'FloresB566+'
+
+            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+            c = db.cursor()
+            consulta = "INSERT INTO Proveedor(nombre, monto, tipo_pago, id_empresa, id_cuenta) VALUES('" + nombre + "', '" + str(monto) + "', '" + tipo_pago + "', '" + str(usuario.id_empresa.id_empresa) + "', '" + str(cuenta.id_cuenta) + "');"
+            c.execute(consulta)
+            db.commit()
+            c.close()
+
+            mensaje = "SE LOGRO AGREGAR EL PROVEEDOR"
+
+            form = proveedor()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA')
+            mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)

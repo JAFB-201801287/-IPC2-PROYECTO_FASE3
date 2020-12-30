@@ -89,3 +89,13 @@ class prestamo_automatico(forms.Form):
     class Meta:
         fields = ("monto","cuenta", "prestamos")
 
+class proveedor(forms.Form):
+    nombre = forms.CharField(required = True, max_length=20, help_text='', label='', widget=forms.TextInput(attrs={'placeholder': 'NOMBRE DEL PROVEEDOR', 'class': 'text_box'}))
+    monto = forms.FloatField(required = True, help_text='', label='', widget=forms.NumberInput(attrs={'placeholder': 'MONTO A PAGAR'}))
+    TIPOS_PAGO = [('', 'SELECCIONAR TIPO DE PAGOS'), ('MENSUAL', 'MENSUAL'), ('QUINCENAL', 'QUINCENAL')]
+    tipo_pago = forms.ChoiceField(required = True, help_text='', label='', choices=TIPOS_PAGO)
+    cuenta = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Cuenta.objects.all(), empty_label="SELECCIONE NUMERO DE CUENTA PARA REALIZAR LOS PAGOS", to_field_name="id_cuenta")
+
+    class Meta:
+        fields = ("nombre","monto", "tipo_pago", "cuenta")
+

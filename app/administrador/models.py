@@ -204,6 +204,12 @@ class Empresa(models.Model):
     nombre_representante = models.CharField(max_length=150)
     tipo_empresa = models.CharField(max_length=150)
 
+    def __str__(self):
+        return u'{0}'.format(self.nombre)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.nombre)
+
     class Meta:
         managed = False
         db_table = 'empresa'

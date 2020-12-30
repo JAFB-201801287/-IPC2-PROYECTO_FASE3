@@ -37,4 +37,5 @@ urlpatterns = [
     path('cliente/prestamo/pago-automatico1/', views.pagar_automatico, name='cliente_prestamo_auto1'),
     path('cliente/cuenta/estado/', views.estado_cuenta, name='cliente_cuenta_estado'),
     path('cliente/proveedor/', views.lista_proveedores, name='cliente_proveedor'),
+    path('cliente/proveedor/agregar/', views.agregar_proveedor, name='cliente_proveedor_agregar'),
 ]
