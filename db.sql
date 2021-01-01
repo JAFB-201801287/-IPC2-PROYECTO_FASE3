@@ -108,8 +108,8 @@ CREATE TABLE Tarjeta (
     puntos INT,
     cashback INT,
     limiteCredito FLOAT(15,2) NOT NULL,
-    id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+    id_cuenta INT NOT NULL,
+    FOREIGN KEY (id_cuenta) REFERENCES Cuenta(id_cuenta)
 );
 
 CREATE TABLE DetalleTarjeta (
@@ -147,8 +147,6 @@ CREATE TABLE Proveedor (
 CREATE TABLE PagoPlanilla (
 	id_pagoPlanilla INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     monto FLOAT(15,2) NOT NULL,
-    monto_anterior FLOAT(15,2) NOT NULL,
-    monto_despues FLOAT(15,2) NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_planilla INT NOT NULL,
     id_cuenta INT NOT NULL,
@@ -159,8 +157,6 @@ CREATE TABLE PagoPlanilla (
 CREATE TABLE PagoProveedor (
 	id_pagoProveedor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     monto FLOAT(15,2) NOT NULL,
-    monto_anterior FLOAT(15,2) NOT NULL,
-    monto_despues FLOAT(15,2) NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_proveedor INT NOT NULL,
     id_cuenta INT NOT NULL,
@@ -169,23 +165,28 @@ CREATE TABLE PagoProveedor (
 );
 
 SELECT * FROM Cliente;
-INSERT INTO Cliente(cui, nit, nombre, apellido, fecha_nacimiento) VALUES('3007153150101', '544554545454', 'Jose Andres', 'Flores Barco', '21/12/2020');
+INSERT INTO Cliente(cui, nit, nombre, apellido, fecha_nacimiento) 
+VALUES('123456789', '123456789', 'Alfredo', 'De Leon', '05/06/1985'),
+	  ('987654321', '987654321', 'Antonio', 'De La Cruz', '06/07/1986'),
+      ('963258741', '963258741', 'Pamela', 'Fernandez', '07/08/1987');
+      
 SELECT * FROM Usuario;
-INSERT INTO Usuario(nombre, contrasena, cui, intentos) VALUES('', '', '');
-UPDATE Usuario SET intentos = '', contrasena = '' WHERE id_usuario = '';
+INSERT INTO Usuario(nombre, contrasena, intentos, cui) 
+VALUES('usuario1', '1234', '0', '123456789'),
+      ('usuario2', '1234', '0', '987654321'),
+      ('usuario3', '1234', '0', '963258741');
+      
 SELECT * FROM Empresa;
-INSERT INTO Empresa(nombre, nombre_comercial, nombre_representante) VALUES('', '', '');
-SELECT * FROM Cuenta;
-INSERT INTO Cuenta(monto, tipo_cuenta, tipo_moneda, id_usuario) VALUES('', '', '', '');
-UPDATE Cuenta SET monto = '' WHERE id_cuenta = '';
-SELECT * FROM Transaccion;
-INSERT INTO Transaccion(monto, monto_anterior, monto_despues, tipo_moneda, tipo_transaccion, id_cuenta) VALUES('', '', '', '', '', '');
-SELECT * FROM Chequera;
-DELETE FROM Chequera WHERE id_chequera = '3';
-SELECT * FROM Cheque;
-INSERT INTO Cheque(monto, autorizado, disponible, id_chequera) VALUES('0', 'NO', 'SI', '');
-UPDATE Cheque SET monto = '0', autorizado = 'NO' WHERE id_cheque = '1';
-UPDATE Cheque SET disponible = 'NO' WHERE id_cheque = '1';
+INSERT INTO Empresa(nombre, nombre_comercial, nombre_representante, tipo_empresa) 
+VALUES('EMPRESA 1', 'EMPRESA 1 S.A', 'Sara', 'COMERCIAL'),
+      ('EMPRESA 2', 'EMPRESA 2 S.A', 'Kevin', 'COMERCIAL'),
+      ('EMPRESA 3', 'EMPRESA 3 S.A', 'Antonio', 'COMERCIAL');
+      
+SELECT * FROM Usuario;
+INSERT INTO Usuario(nombre, contrasena, intentos, id_empresa) 
+VALUES('empresa1', '1234', '0', '1'),
+      ('empresa2', '1234', '0', '2'),
+      ('empresa3', '1234', '0', '3');
 
 SELECT * FROM Prestamo;
 INSERT INTO Prestamo(monto, descripcion, tipo_prestamo, id_usuario) VALUES('0', '', '', '0');
@@ -198,6 +199,7 @@ SELECT * FROM PagoPrestamo;
 INSERT INTO PagoPrestamo(monto, interes, tipo_pago, id_prestamo, id_cuenta) VALUES('', '0', 'PAGO AUTOMATICO', '', '');
 
 SELECT * FROM Tarjeta;
+DELETE  FROM Tarjeta WHERE id_tarjeta != 10;
 INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_usuario) VALUES('0', '', '0', '0', '0', '');
 
 SELECT * FROM PagoPrestamo;
@@ -211,3 +213,9 @@ INSERT INTO PagoProveedor(monto, monto_anterior, monto_despues, id_proveedor, id
 SELECT * FROM Planilla;
 DELETE FROM Planilla WHERE id_planilla = '';
 INSERT INTO Planilla(nombre_empleado, monto, tipo_pago, id_empresa, id_cuenta) VALUES('', '', '', '', '');
+UPDATE Planilla SET nombre_empleado = '', tipo_pago = '', id_cuenta = ''  WHERE id_planilla = '';
+
+SELECT * FROM PagoPlanilla;
+INSERT INTO PagoPlanilla(monto, monto_anterior, monto_despues, id_planilla, id_cuenta) VALUES('', '0', '0', '', '');
+
+SELECT * FROM Cuenta;

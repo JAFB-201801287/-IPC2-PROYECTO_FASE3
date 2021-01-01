@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import *
 import MySQLdb
 from django.db.models import Q
-from random import choice
+import random
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
@@ -453,17 +453,17 @@ def activar_usuario(request):
             longitud = 6
             valores = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<=>@#%&+"
             p1 = ""
-            p1 = p1.join([choice(valores) for i in range(longitud)])
+            p1 = ''#p1.join([choice(valores) for i in range(longitud)])
 
             longitud = 2
             valores = "0123456789"
             p2 = ""
-            p2 = p2.join([choice(valores) for i in range(longitud)])
+            p2 = ''#p2.join([choice(valores) for i in range(longitud)])
 
             longitud = 2
             valores = "<=>@#%&+"
             p3 = ""
-            p3 = p3.join([choice(valores) for i in range(longitud)])
+            p3 = ''#p3.join([choice(valores) for i in range(longitud)])
 
             contrasena = p1 + p2 + p3
 
@@ -659,7 +659,7 @@ def agregar_tarjeta(request):
         form = tarjeta_credito(data=request.POST)
         if form.is_valid():
             datos = form.cleaned_data
-            usuario = datos.get("usuario")
+            cuenta = datos.get("cuenta")
             marca = datos.get("marca")
 
             host = 'localhost'
@@ -668,16 +668,63 @@ def agregar_tarjeta(request):
             contra = 'FloresB566+'
             #puerto = 3306
 
-            #Conexion a base de datos sin uso de modulos
-            db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
-            c = db.cursor()
-            consulta = "INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_usuario) VALUES('0', '" + marca + "', '0', '0', '0', '" + str(usuario.id_usuario) + "');"
-            c.execute(consulta)
-            db.commit()
-            c.close()
+            usuario = cuenta.id_usuario
+            tarjetas = Tarjeta.objects.all().select_related('id_cuenta').filter(id_cuenta__id_usuario__id_usuario=usuario.id_usuario)
+            cantidad_prepuntos = 0
+            cantidad_cashback = 0
+            cantidad_tarjetas = 0
+            limite_credito = 0
 
-            form = tarjeta_credito()
-            mensaje_error = "LA CREACION DE LA TARJETA DE CREDITO FUE EXITOSA"
+            for tarjeta in tarjetas:
+                cantidad_tarjetas += 1
+                if(tarjeta.marca == 'PREFEPUNTOS'):
+                    cantidad_prepuntos += 1
+                elif(tarjeta.marca == 'CASHBACK'):
+                    cantidad_cashback += 1
+
+            if(usuario.cui == None):
+                if(marca == 'PREFEPUNTOS'):
+                    if(cantidad_prepuntos == 0):
+                        limite_credito = random.randint(5000, 7000)
+                    elif(cantidad_prepuntos == 1):
+                        limite_credito = random.randint(4500, 5500)
+                    elif(cantidad_prepuntos == 2):
+                        limite_credito = random.randint(3500, 4000)
+                elif(marca == 'CASHBACK'):
+                    if(cantidad_cashback == 0):
+                        limite_credito = random.randint(5000, 7000)
+                    elif(cantidad_cashback == 1):
+                        limite_credito = random.randint(4500, 5500)
+                    elif(cantidad_cashback == 2):
+                        limite_credito = random.randint(3500, 4000)
+            elif(usuario.id_empresa == None):
+                if(marca == 'PREFEPUNTOS'):
+                    if(cantidad_prepuntos == 0):
+                        limite_credito = random.randint(10000, 15000)
+                    elif(cantidad_prepuntos == 1):
+                        limite_credito = random.randint(12000, 17000)
+                    elif(cantidad_prepuntos == 2):
+                        limite_credito = random.randint(15000, 19000)
+                elif(marca == 'CASHBACK'):
+                    if(cantidad_cashback == 0):
+                        limite_credito = random.randint(10000, 15000)
+                    elif(cantidad_cashback == 1):
+                        limite_credito = random.randint(12000, 17000)
+                    elif(cantidad_cashback == 2):
+                        limite_credito = random.randint(15000, 19000)
+
+            if(cantidad_tarjetas < 3):
+                db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                c = db.cursor()
+                consulta = "INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_cuenta) VALUES('0', '" + marca + "', '0', '0', '" + str(limite_credito) +"', '" + str(cuenta.id_cuenta) + "');"
+                c.execute(consulta)
+                db.commit()
+                c.close()
+                form = tarjeta_credito()
+                mensaje_error = "LA CREACION DE LA TARJETA DE CREDITO FUE EXITOSA"
+            else:
+                mensaje_error = "EL USUARIO YA TIENE TRES TARJETAS DE CREDITO"
+
             variables = {
                 "titulo" : titulo_pantalla,
                 "texto_boton": texto_boton,

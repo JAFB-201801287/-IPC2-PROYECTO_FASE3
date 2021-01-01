@@ -689,7 +689,6 @@ def lista_prestamo(request):
     pagos_prestamo = Pagoprestamo.objects.all()
     bandera = False
 
-
     form = buscar_prestamo()
     form.fields['prestamos'].queryset = Prestamo.objects.all().filter(id_usuario=id_usuario)
 
@@ -719,7 +718,8 @@ def lista_prestamo(request):
                 "user": user,
                 "form": form,
                 "pagos_prestamo": pagos_prestamo,
-                "bandera": bandera
+                "bandera": bandera,
+                "prestamo": prestamo
             }
         else:
             bandera = False
@@ -755,7 +755,8 @@ def agregar_prestamo(request):
             monto = datos.get("monto")
             tipo_prestamo = datos.get("tipo_prestamo")
             descripcion = datos.get("descripcion")
-
+            interes = 0
+            
             host = 'localhost'
             db_name = 'banca_virtual'
             user = 'root'
@@ -940,6 +941,92 @@ def pagar_automatico(request):
             }
     return render(request, 'cliente/formulario/index.html', variables)
 
+def pago_prestamo(request): 
+    id_usuario = request.session['user']
+    id_prestamo = request.session['prestamo'] 
+
+    form = pagar_prestamo()
+    form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA').filter(tipo_cuenta='MONETARIA')
+
+    titulo_pantalla = "PAGO DE PRESTAMO NO. " + str(id_prestamo)
+    texto_boton = "ACEPTAR"
+    regresar = 'cliente_prestamo'
+    mensaje = ''
+    variables = {
+        "titulo" : titulo_pantalla,
+        "texto_boton": texto_boton,
+        "regresar": regresar,
+        "form": form,
+        "mensaje": mensaje
+    }
+    if (request.method == "POST"):
+        form = pagar_prestamo(data=request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+
+            nombre_usuario = datos.get("nombre_usuario")
+            contrasena = datos.get("contrasena")
+            monto = datos.get("monto")
+            cuenta = datos.get("cuenta")
+
+            try:
+                host = 'localhost'
+                db_name = 'banca_virtual'
+                user = 'root'
+                contra = 'FloresB566+'
+
+                usuario = Usuario.objects.get(id_usuario = id_usuario)
+                prestamo = Prestamo.objects.get(id_prestamo=id_prestamo)
+
+                if(usuario.nombre == nombre_usuario and usuario.contrasena == contrasena):
+                    monto_anterior = cuenta.monto
+                    monto_despues = (prestamo.monto - monto)
+                    db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                    c = db.cursor()
+                    consulta = "INSERT INTO Transaccion(monto, monto_anterior, monto_despues, tipo_moneda, tipo_transaccion, id_cuenta) VALUES('" + str(monto) + "', '" + str(monto_anterior) + "', '" + str(monto_despues) + "', '" + cuenta.tipo_moneda + "', 'PAGO PRESTAMO', '" + str(cuenta.id_cuenta) +"');"
+                    c.execute(consulta)
+                    db.commit()
+                    c.close()
+
+                    db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                    c = db.cursor()
+                    consulta = "UPDATE Prestamo SET monto = '" + str(monto_despues) + "' WHERE id_prestamo = '" + str(prestamo.id_prestamo) +"';"
+                    c.execute(consulta)
+                    db.commit()
+                    c.close()
+
+                    db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
+                    c = db.cursor()
+                    consulta = "INSERT INTO PagoPrestamo(monto, interes, tipo_pago, id_prestamo, id_cuenta) VALUES('" + str(monto) + "', '0', 'PAGO ADELANTADO', '" + str(id_prestamo) + "', '" + str(cuenta.id_cuenta) + "');"
+                    c.execute(consulta)
+                    db.commit()
+                    c.close()
+
+                    mensaje = "SE A PAGADO"
+                else: 
+                    mensaje = "ERROR CREDENCIALES DE USUARIO NO ACEPTADAS"
+            except ObjectDoesNotExist:
+                print('No existe')
+
+            form = pagar_prestamo()
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA').filter(tipo_cuenta='MONETARIA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+        else:
+            form.fields['cuenta'].queryset = Cuenta.objects.all().filter(id_usuario=id_usuario).filter(estado='ACTIVA').filter(tipo_cuenta='MONETARIA')
+            variables = {
+                "titulo" : titulo_pantalla,
+                "texto_boton": texto_boton,
+                "regresar": regresar,
+                "form": form,
+                "mensaje": mensaje
+            }
+    return render(request, 'cliente/formulario/index.html', variables)
 
 def estado_cuenta(request):
     id_cuenta = request.session['id_cuenta']
@@ -1026,7 +1113,7 @@ def agregar_proveedor(request):
             mensaje = "SE LOGRO AGREGAR EL PROVEEDOR"
 
             form = proveedor()
-            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA')
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__id_empresa__id_empresa=None)
             variables = {
                 "titulo" : titulo_pantalla,
                 "texto_boton": texto_boton,
@@ -1035,7 +1122,7 @@ def agregar_proveedor(request):
                 "mensaje": mensaje
             }
         else:
-            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA')
+            form.fields['cuenta'].queryset = Cuenta.objects.all().exclude(id_usuario=id_usuario).filter(estado='ACTIVA').exclude(id_usuario__id_empresa__id_empresa=usuario.id_empresa.id_empresa).exclude(id_usuario__id_empresa__id_empresa=None)
             mensaje_error = "ERROR NO SE PUDO HACER LA CONSULTA"
             variables = {
                 "titulo" : titulo_pantalla,
@@ -1107,7 +1194,7 @@ def pagar_proveedor(request):
 
                         db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
                         c = db.cursor()
-                        consulta = "INSERT INTO PagoProveedor(monto, monto_anterior, monto_despues, id_proveedor, id_cuenta) VALUES('" + str(monto) + "', '0', '0', '" + str(proveedor.id_proveedor) + "', '" + str(cuenta.id_cuenta) + "');"
+                        consulta = "INSERT INTO PagoProveedor(monto, id_proveedor, id_cuenta) VALUES('" + str(monto) + "', '" + str(proveedor.id_proveedor) + "', '" + str(cuenta.id_cuenta) + "');"
                         c.execute(consulta)
                         db.commit()
                         c.close()
@@ -1464,7 +1551,7 @@ def pagar_planilla(request):
 
                         db = MySQLdb.connect(host=host, user= user, password=contra, db=db_name, connect_timeout=5)
                         c = db.cursor()
-                        consulta = "INSERT INTO PagoPlanilla(monto, monto_anterior, monto_despues, id_planilla, id_cuenta) VALUES('" + str(monto) + "', '0', '0', '" + str(planilla.id_planilla) + "', '" + str(cuenta.id_cuenta) + "');"
+                        consulta = "INSERT INTO PagoPlanilla(monto, id_planilla, id_cuenta) VALUES('" + str(monto) + "', '" + str(planilla.id_planilla) + "', '" + str(cuenta.id_cuenta) + "');"
                         c.execute(consulta)
                         db.commit()
                         c.close()
@@ -1529,7 +1616,7 @@ def detalle_tarjeta(request):
     form = buscar_tarjeta()
     detalle_tarjetas = []
 
-    titulo_pantalla = "DETALLE PRESTAMO"
+    titulo_pantalla = "DETALLE TARJETA"
     texto_boton = "ACEPTAR"
     regresar = 'cliente_inicio'
 

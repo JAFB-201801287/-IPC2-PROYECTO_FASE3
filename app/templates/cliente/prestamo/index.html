@@ -43,26 +43,41 @@
             <h3>DETALLE DE PRESTAMO</h3>
             <br/>
             <a class="button" href="{% url 'cliente_prestamo_auto1' %}">PAGO AUTOMATICO</a>
+            <a class="button" href="{% url 'cliente_prestamo_pagar' %}">PAGO ADELANTADO</a>
             <p></p>
             <br/>
             <table class="tabla">
-            <tr>
-                <th><strong>MONTO</strong></th>
-                <th><strong>INTERES</strong></th>
-                <th><strong>TIPO DE PAGO</strong></th>
-                <th><strong>NUMERO DE CUENTA</strong></th>
-                <th><strong>FECHA</strong></th>
-            </tr>
-            {% for pp in pagos_prestamo %}
-                    <tr>
-                        <td>{{ pp.monto }}</td>
-                        <td>{{ pp.interes }}</td>
-                        <td>{{ pp.tipo_pago }}</td>
-                        <td>{{ pp.id_cuenta.id_cuenta }}</td>
-                        <td>{{ pp.fecha }}</td>
-                    </tr>
-            {% endfor %}
-        </table>
+                <tr>
+                    <th><strong>NO. PRESTAMO</strong></th>
+                    <th><strong>TIEMPO</strong></th>
+                    <th><strong>MONTO TOTAL</strong></th>
+                </tr>
+                <tr>
+                    <td>{{ prestamo.id_prestamo }}</td>
+                    <td>{{ prestamo.tipo_prestamo }}</td>
+                    <td>{{ prestamo.monto }}</td>
+                </tr>
+            </table>
+            <p></p>
+            <br/>
+            <table class="tabla">
+                <tr>
+                    <th><strong>MONTO</strong></th>
+                    <th><strong>INTERES</strong></th>
+                    <th><strong>TIPO DE PAGO</strong></th>
+                    <th><strong>NUMERO DE CUENTA</strong></th>
+                    <th><strong>FECHA</strong></th>
+                </tr>
+                {% for pp in pagos_prestamo %}
+                        <tr>
+                            <td>{{ pp.monto }}</td>
+                            <td>{{ pp.interes }}</td>
+                            <td>{{ pp.tipo_pago }}</td>
+                            <td>{{ pp.id_cuenta.id_cuenta }}</td>
+                            <td>{{ pp.fecha }}</td>
+                        </tr>
+                {% endfor %}
+            </table>
         {% endif %}
     </div>
     

@@ -79,10 +79,10 @@ class prestamo(forms.Form):
         fields = ("prestamos")
 
 class tarjeta_credito(forms.Form):
-    usuario = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Usuario.objects.all(), empty_label="SELECCIONE UN USUARIO", to_field_name="id_usuario")
+    cuenta = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Cuenta.objects.all().select_related('id_usuario').filter(tipo_cuenta="MONETARIA").filter(estado='ACTIVA'), empty_label="SELECCIONE NUMERO DE CUENTA", to_field_name="id_cuenta")
     MARCA = [('', 'SELECCIONAR MARCA DE TARJETA DE CREDITO'), ('PREFEPUNTOS', 'PREFEPUNTOS'), ('CASHBACK', 'CASHBACK')]
     marca = forms.ChoiceField(required = True, help_text='', label='', choices=MARCA)
 
     class Meta:
-        fields = ("usuario", "marca")
+        fields = ("cuenta", "marca")
 

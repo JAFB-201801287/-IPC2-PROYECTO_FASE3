@@ -194,8 +194,6 @@ class Empresa(models.Model):
 class Pagoplanilla(models.Model):
     id_pagoplanilla = models.AutoField(db_column='id_pagoPlanilla', primary_key=True)  # Field name made lowercase.
     monto = models.FloatField()
-    monto_anterior = models.FloatField()
-    monto_despues = models.FloatField()
     fecha = models.DateTimeField(blank=True, null=True)
     id_planilla = models.ForeignKey('Planilla', models.DO_NOTHING, db_column='id_planilla')
     id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
@@ -222,8 +220,6 @@ class Pagoprestamo(models.Model):
 class Pagoproveedor(models.Model):
     id_pagoproveedor = models.AutoField(db_column='id_pagoProveedor', primary_key=True)  # Field name made lowercase.
     monto = models.FloatField()
-    monto_anterior = models.FloatField()
-    monto_despues = models.FloatField()
     fecha = models.DateTimeField(blank=True, null=True)
     id_proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor')
     id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
@@ -253,6 +249,7 @@ class Prestamo(models.Model):
     tipo_prestamo = models.CharField(max_length=30)
     id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
     aprobado = models.CharField(max_length=5, blank=True, null=True)
+    interes = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -290,7 +287,7 @@ class Tarjeta(models.Model):
     puntos = models.IntegerField(blank=True, null=True)
     cashback = models.IntegerField(blank=True, null=True)
     limitecredito = models.FloatField(db_column='limiteCredito')  # Field name made lowercase.
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
+    id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
 
     class Meta:
         managed = False

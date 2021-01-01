@@ -132,3 +132,12 @@ class buscar_tarjeta(forms.Form):
     class Meta:
         fields = ("tarjeta")
 
+class pagar_prestamo(forms.Form):
+    nombre_usuario = forms.CharField(required = True, max_length=20, help_text='', label='', widget=forms.TextInput(attrs={'placeholder': 'NOMBRE DE USUARIO', 'class': 'text_box'}))
+    contrasena = forms.CharField(required = True, max_length=20, help_text='', label='', widget=forms.PasswordInput(attrs={'placeholder': 'CONTRASEÑA', 'class': 'text_box'}))
+    cuenta = forms.ModelChoiceField(required = True, help_text='', label='', queryset=Cuenta.objects.all(), empty_label="SELECCIONE NUMERO DE CUENTA PARA REALIZAR LOS PAGOS", to_field_name="id_cuenta")
+    monto = forms.FloatField(required = True, help_text='', label='', widget=forms.NumberInput(attrs={'placeholder': 'MONTO A PAGAR'}))
+
+    class Meta:
+        fields = ("nombre_usuario","contrasena", "cuenta", "monto")
+

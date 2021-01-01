@@ -218,8 +218,6 @@ class Empresa(models.Model):
 class Pagoplanilla(models.Model):
     id_pagoplanilla = models.AutoField(db_column='id_pagoPlanilla', primary_key=True)  # Field name made lowercase.
     monto = models.FloatField()
-    monto_anterior = models.FloatField()
-    monto_despues = models.FloatField()
     fecha = models.DateTimeField(blank=True, null=True)
     id_planilla = models.ForeignKey('Planilla', models.DO_NOTHING, db_column='id_planilla')
     id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
@@ -246,8 +244,6 @@ class Pagoprestamo(models.Model):
 class Pagoproveedor(models.Model):
     id_pagoproveedor = models.AutoField(db_column='id_pagoProveedor', primary_key=True)  # Field name made lowercase.
     monto = models.FloatField()
-    monto_anterior = models.FloatField()
-    monto_despues = models.FloatField()
     fecha = models.DateTimeField(blank=True, null=True)
     id_proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor')
     id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
@@ -265,6 +261,12 @@ class Planilla(models.Model):
     id_empresa = models.ForeignKey(Empresa, models.DO_NOTHING, db_column='id_empresa')
     id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
 
+    def __str__(self):
+        return u'{0}'.format('-CODIGO DE PLANILLA: ' + str(self.id_planilla) + ' -NOMBRE EMPLEADO: ' + self.nombre_empleado + ' -MONTO A PAGAR: ' + str(self.monto))
+
+    def __unicode__(self):
+        return u'{0}'.format('-CODIGO DE PLANILLA: ' + str(self.id_planilla) + ' -NOMBRE EMPLEADO: ' + self.nombre_empleado + ' -MONTO A PAGAR: ' + str(self.monto))
+
     class Meta:
         managed = False
         db_table = 'planilla'
@@ -279,10 +281,10 @@ class Prestamo(models.Model):
     aprobado = models.CharField(max_length=5, blank=True, null=True)
 
     def __str__(self):
-        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo))
+        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo) + ' -MONTO: ' + str(self.monto))
 
     def __unicode__(self):
-        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo))
+        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo) + ' -MONTO: ' + str(self.monto))
 
     class Meta:
         managed = False
@@ -320,7 +322,13 @@ class Tarjeta(models.Model):
     puntos = models.IntegerField(blank=True, null=True)
     cashback = models.IntegerField(blank=True, null=True)
     limitecredito = models.FloatField(db_column='limiteCredito')  # Field name made lowercase.
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
+    id_cuenta = models.ForeignKey(Cuenta, models.DO_NOTHING, db_column='id_cuenta')
+
+    def __str__(self):
+        return u'{0}'.format('-NUMERO DE TARJETA: ' + str(self.id_tarjeta) + ' -TIPO_TARJETA: ' + self.marca)
+
+    def __unicode__(self):
+        return u'{0}'.format('-NUMERO DE TARJETA: ' + str(self.id_tarjeta) + ' -TIPO_TARJETA: ' + self.marca)
 
     class Meta:
         managed = False
@@ -359,7 +367,4 @@ class Usuario(models.Model):
     class Meta:
         managed = False
         db_table = 'usuario'
-
-
-
 

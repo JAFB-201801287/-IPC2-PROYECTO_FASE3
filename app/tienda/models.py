@@ -281,10 +281,10 @@ class Prestamo(models.Model):
     aprobado = models.CharField(max_length=5, blank=True, null=True)
 
     def __str__(self):
-        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo) + ' -MONTO: ' + str(self.monto))
+        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo) + ' -MONTO: ' + self.monto)
 
     def __unicode__(self):
-        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo) + ' -MONTO: ' + str(self.monto))
+        return u'{0}'.format('CODIGO DE PRESTAMO: ' + str(self.id_prestamo) + ' -MONTO: ' + self.monto)
 
     class Meta:
         managed = False
