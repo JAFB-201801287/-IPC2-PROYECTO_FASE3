@@ -166,15 +166,29 @@ CREATE TABLE PagoProveedor (
 
 SELECT * FROM Cliente;
 INSERT INTO Cliente(cui, nit, nombre, apellido, fecha_nacimiento) 
-VALUES('123456789', '123456789', 'Alfredo', 'De Leon', '05/06/1985'),
-	  ('987654321', '987654321', 'Antonio', 'De La Cruz', '06/07/1986'),
-      ('963258741', '963258741', 'Pamela', 'Fernandez', '07/08/1987');
+VALUES('1111111111', '1111111111', 'DIEGO FERNANDO', 'CORTEZ LOPEZ', '05/06/1985'),
+      ('2222222222', '2222222222', 'KARINA NOHEMI', 'RAMIREZ ORELLANA', '05/06/1985'),
+      ('3333333333', '3333333333', 'ANGEL GEOVANY', 'ARAGON PEREZ', '05/06/1985'),
+      ('4444444444', '4444444444', 'CARLOS ROBERTO', 'QUIXTAN PEREZ', '05/06/1985'),
+      ('5555555555', '5555555555', 'ERICK IVAN', 'MAYORGA RODRIGUEZ', '05/06/1985'),
+      ('6666666666', '6666666666', 'BYRON ESTUARDO', 'CAAL CATUN', '05/06/1985'),
+	  ('7777777777', '7777777777', 'RONALD RODRIGO', 'MARIN SALAS', '05/06/1985'),
+      ('8888888888', '8888888888', 'OSCAR DANIEL', 'OLIVA', '05/06/1985'),
+      ('9999999999', '9999999999', 'EDUARDO ABRAHAM', 'BARILLAS', '05/06/1985'),
+      ('1010101010', '1010101010', 'CARLOS ESTUARDO', 'MONTERROSO SANTOS', '05/06/1985');
       
 SELECT * FROM Usuario;
 INSERT INTO Usuario(nombre, contrasena, intentos, cui) 
-VALUES('usuario1', '1234', '0', '123456789'),
-      ('usuario2', '1234', '0', '987654321'),
-      ('usuario3', '1234', '0', '963258741');
+VALUES('usuario1', '1234', '0', '1111111111'),
+      ('usuario2', '1234', '0', '2222222222'),
+      ('usuario3', '1234', '0', '3333333333'),
+      ('usuario4', '1234', '0', '4444444444'),
+      ('usuario5', '1234', '0', '5555555555'),
+      ('usuario6', '1234', '0', '6666666666'),
+      ('usuario7', '1234', '0', '7777777777'),
+      ('usuario8', '1234', '0', '8888888888'),
+      ('usuario9', '1234', '0', '9999999999'),
+      ('usuario10', '1234', '0', '1010101010');
       
 SELECT * FROM Empresa;
 INSERT INTO Empresa(nombre, nombre_comercial, nombre_representante, tipo_empresa) 
@@ -187,35 +201,28 @@ INSERT INTO Usuario(nombre, contrasena, intentos, id_empresa)
 VALUES('empresa1', '1234', '0', '1'),
       ('empresa2', '1234', '0', '2'),
       ('empresa3', '1234', '0', '3');
-
-SELECT * FROM Prestamo;
-INSERT INTO Prestamo(monto, descripcion, tipo_prestamo, id_usuario) VALUES('0', '', '', '0');
-UPDATE Prestamo SET aprobado = 'SI' WHERE id_prestamo = '';
-
-SELECT * FROM PrestamoAutomatico;
-INSERT INTO PrestamoAutomatico(monto, id_prestamo, id_cuenta) VALUES('0', '', '');
-
-SELECT * FROM PagoPrestamo;
-INSERT INTO PagoPrestamo(monto, interes, tipo_pago, id_prestamo, id_cuenta) VALUES('', '0', 'PAGO AUTOMATICO', '', '');
-
-SELECT * FROM Tarjeta;
-DELETE  FROM Tarjeta WHERE id_tarjeta != 10;
-INSERT INTO Tarjeta(monto, marca, puntos, cashback, limiteCredito, id_usuario) VALUES('0', '', '0', '0', '0', '');
-
-SELECT * FROM PagoPrestamo;
-
-SELECT * FROM Proveedor;
-INSERT INTO Tarjeta(nombre, monto, tipo_pago, id_empresa, id_cuenta) VALUES('0', '', '0', '0', '');
-
-SELECT * FROM PagoProveedor;
-INSERT INTO PagoProveedor(monto, monto_anterior, monto_despues, id_proveedor, id_cuenta) VALUES('', '0', '0', '', '');
-
-SELECT * FROM Planilla;
-DELETE FROM Planilla WHERE id_planilla = '';
-INSERT INTO Planilla(nombre_empleado, monto, tipo_pago, id_empresa, id_cuenta) VALUES('', '', '', '', '');
-UPDATE Planilla SET nombre_empleado = '', tipo_pago = '', id_cuenta = ''  WHERE id_planilla = '';
-
-SELECT * FROM PagoPlanilla;
-INSERT INTO PagoPlanilla(monto, monto_anterior, monto_despues, id_planilla, id_cuenta) VALUES('', '0', '0', '', '');
-
+      
 SELECT * FROM Cuenta;
+INSERT INTO Cuenta(id_cuenta, monto, tipo_cuenta, tipo_moneda, id_usuario, estado)
+VALUES('541234', '500', 'MONETARIA', 'QUETZAL', '1', 'ACTIVA'),
+	  ('263769', '500', 'MONETARIA', 'QUETZAL', '2', 'ACTIVA'),
+      ('481366', '500', 'MONETARIA', 'QUETZAL', '3', 'ACTIVA'),
+      ('152352', '500', 'MONETARIA', 'QUETZAL', '4', 'ACTIVA'),
+      ('358054', '500', 'MONETARIA', 'DOLLAR', '5', 'ACTIVA'),
+      ('503944', '500', 'MONETARIA', 'DOLLAR', '6', 'ACTIVA'),
+      ('316167', '500', 'MONETARIA', 'DOLLAR', '7', 'ACTIVA'),
+      ('374296', '500', 'MONETARIA', 'DOLLAR', '8', 'ACTIVA'),
+      ('556658', '500', 'MONETARIA', 'DOLLAR', '9', 'ACTIVA'),
+      ('462978', '500', 'MONETARIA', 'DOLLAR', '10', 'ACTIVA');
+      
+INSERT INTO Cuenta(monto, tipo_cuenta, tipo_moneda, id_usuario, estado)
+VALUES('50000', 'MONETARIA', 'QUETZAL', '11', 'ACTIVA'),
+	  ('70000', 'MONETARIA', 'QUETZAL', '12', 'ACTIVA'),
+      ('50000', 'MONETARIA', 'QUETZAL', '13', 'ACTIVA'),
+      ('80000', 'MONETARIA', 'QUETZAL', '11', 'ACTIVA'),
+      ('50000', 'MONETARIA', 'DOLLAR', '12', 'ACTIVA'),
+      ('90000', 'MONETARIA', 'DOLLAR', '13', 'ACTIVA'),
+      ('10000', 'MONETARIA', 'DOLLAR', '11', 'ACTIVA'),
+      ('50000', 'MONETARIA', 'DOLLAR', '12', 'ACTIVA'),
+      ('60000', 'MONETARIA', 'DOLLAR', '13', 'ACTIVA'),
+      ('40000', 'MONETARIA', 'DOLLAR', '11', 'ACTIVA');

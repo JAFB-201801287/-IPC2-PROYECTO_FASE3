@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bancaOnline.apps.BancaonlineConfig',
     'administrador.apps.AdministradorConfig',
+    'tienda.apps.TiendaConfig',
 ]
 
 MIDDLEWARE = [
